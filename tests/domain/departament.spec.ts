@@ -13,7 +13,7 @@ describe("Departament", () => {
     });
 
     it("shoud throw error too lower characters if name was short", () => {
-      expect(() => departament.create("ema", "a", ["edmond"])).toThrowError(
+      expect(() => departament.create("ema", "a", ["edmond", "bosco"])).toThrowError(
         TOO_LOWER_CHARACTERS
       );
     });
