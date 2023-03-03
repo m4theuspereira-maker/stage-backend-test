@@ -1,0 +1,50 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("DATABASE_URL")
+}
+
+model Process {
+    id                    String       @id @map("_id") @db.ObjectId
+    name                  String
+    responsable           String[]
+    requiredDocumentation String?
+    description           String?
+    status                String
+    processId             String?      @db.ObjectId
+    Departament           Departament? @relation(fields: [departamentId], references: [id])
+    departamentId         String?      @db.ObjectId
+    createdAt             DateTime     @default(now())
+    deletedAt             DateTime?
+    updatedAt             DateTime?
+    Subprocess            Subprocess[]
+}
+
+model Subprocess {
+    id                    String    @id @map("_id") @db.ObjectId
+    name                  String
+    responsable           String[]
+    requiredDocumentation String?
+    description           String?
+    status                String
+    processId             String?   @db.ObjectId
+    Process               Process?  @relation(fields: [processId], references: [id])
+    departamentId         String?   @db.ObjectId
+    createdAt             DateTime  @default(now())
+    deletedAt             DateTime?
+    updatedAt             DateTime?
+}
+
+model Departament {
+    id        String    @id @map("_id") @db.ObjectId
+    name      String
+    team      String[]
+    chief     String
+    process   Process[]
+    createdAt DateTime  @default(now())
+    deletedAt DateTime?
+    updatedAt DateTime?
+}
