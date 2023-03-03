@@ -4,7 +4,11 @@ import {
   CREATE_PROCESS_WITH_SUBPROCESS_AND_SUBPROCESS_WITH_DESCRIPTION,
   DESCRIPTION_WITH_EXCEDED_LENGTH
 } from "../mock/mocks";
-import { TOO_MANY_CHARACTERS } from "../../src/domain/constants/constants";
+import {
+  TOO_LOWER_CHARACTERS,
+  TOO_MANY_CHARACTERS
+} from "../../src/domain/constants/constants";
+import { InvalidProcessNameExpection } from "../../src/domain/error/erros";
 
 describe("process", () => {
   let process: Process;
@@ -56,6 +60,15 @@ describe("process", () => {
         })
       ).toThrowError(TOO_MANY_CHARACTERS);
     });
+
+    it("should throw to invalid name expection if name were short", () => {
+      expect(() =>
+        process.create({
+          ...CREATE_PROCESS_WITHOUT_SUBPROCESS_AND_DESCRIPTION,
+          name: "inv"
+        })
+      ).toThrow(new InvalidProcessNameExpection(TOO_LOWER_CHARACTERS));
+    });
   });
 
   describe("validateDescription", () => {
@@ -79,6 +92,38 @@ describe("process", () => {
         process["validateDescription"]("valid description");
 
       expect(processValidated.isValid).toBeTruthy();
+    });
+  });
+
+  describe("validateName", () => {
+    beforeAll(() => {
+      process = new Process();
+    });
+
+    it("should return too lower characters message if the name was invalid", () => {
+      const invalidProcessName = process["validateName"]("inv");
+
+      expect(invalidProcessName).toStrictEqual({
+        isValid: false,
+        error: TOO_LOWER_CHARACTERS
+      });
+    });
+
+    it("should return too lower characters message if the name was invalid", () => {
+      const invalidProcessName = process["validateName"](
+        "invaaaliiidddddddd naammmeeeee proceeeeeeessssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
+      );
+
+      expect(invalidProcessName).toStrictEqual({
+        isValid: false,
+        error: TOO_MANY_CHARACTERS
+      });
+    });
+
+    it("should return isValid as true if the name format as valid", () => {
+      const invalidProcessName = process["validateName"]("valid name");
+
+      expect(invalidProcessName.isValid).toBeTruthy();
     });
   });
 });

@@ -1,4 +1,7 @@
-import { TOO_LOWER_CHARACTERS, TOO_MANY_CHARACTERS } from "./constants/constants";
+import {
+  TOO_LOWER_CHARACTERS,
+  TOO_MANY_CHARACTERS
+} from "./constants/constants";
 import { InvalidDepartamentNameExeption } from "./error/erros";
 import { IDepartament, IParamValidated } from "./interfaces/interfaces";
 
@@ -18,7 +21,7 @@ export class Departament {
   }
 
   private validateName(name: string): IParamValidated {
-    if (name.length > 10) {
+    if (name.length > 30) {
       return { isValid: false, error: TOO_MANY_CHARACTERS };
     }
 

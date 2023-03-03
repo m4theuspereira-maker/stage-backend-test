@@ -8,15 +8,23 @@ export class InvalidDepartamentNameExeption implements Error {
   }
 }
 
-
 export class InvalidProcessDescriptionLength implements Error {
   name: string;
   message: string;
   stack?: string | undefined;
 
-  constructor(message: string){
-    this.name = 'InvalidProcessDescriptionLength', 
-    this.message = message
+  constructor(message: string) {
+    this.name = "InvalidProcessDescriptionLength";
+    this.message = message;
   }
-  
+}
+
+export class InvalidProcessNameExpection implements Error {
+  name: string;
+  message: string;
+
+  constructor(message: string) {
+    this.name = "InvalidProcessNameExpection";
+    this.message = message;
+  }
 }

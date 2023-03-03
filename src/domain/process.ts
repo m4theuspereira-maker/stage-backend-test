@@ -1,5 +1,12 @@
-import { PROCESS_STATUS, TOO_MANY_CHARACTERS } from "./constants/constants";
-import { InvalidProcessDescriptionLength } from "./error/erros";
+import {
+  PROCESS_STATUS,
+  TOO_LOWER_CHARACTERS,
+  TOO_MANY_CHARACTERS
+} from "./constants/constants";
+import {
+  InvalidProcessDescriptionLength,
+  InvalidProcessNameExpection
+} from "./error/erros";
 import {
   IParamValidated,
   IProcess,
@@ -14,9 +21,14 @@ export class Process {
     subprocess = []
   }: IProcessDto): IProcess {
     const isValidParam = this.validateDescription(description!);
+    const isValidName = this.validateName(name);
 
     if (!isValidParam.isValid) {
       throw new InvalidProcessDescriptionLength(isValidParam.error!);
+    }
+
+    if (!isValidName.isValid) {
+      throw new InvalidProcessNameExpection(isValidName.error!);
     }
 
     if (subprocess.length) {
@@ -39,6 +51,18 @@ export class Process {
   private validateDescription(description: string): IParamValidated {
     if (description.length > 500) {
       return { isValid: false, error: TOO_MANY_CHARACTERS };
+    }
+
+    return { isValid: true };
+  }
+
+  private validateName(name: string): IParamValidated {
+    if (name.length > 30) {
+      return { isValid: false, error: TOO_MANY_CHARACTERS };
+    }
+
+    if (name.length < 5) {
+      return { isValid: false, error: TOO_LOWER_CHARACTERS };
     }
 
     return { isValid: true };
