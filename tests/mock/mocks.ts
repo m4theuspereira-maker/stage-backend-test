@@ -1,12 +1,12 @@
 export const CREATE_PROCESS_WITHOUT_SUBPROCESS_AND_DESCRIPTION = {
   name: "Make new relatory",
-  responsable: "Jose"
+  responsables: ["Jose"]
 };
 
 export const SUB_PROCESS = [
   {
     name: "get social security",
-    responsable: "carlos",
+    responsables: ["carlos", "romero"],
     requiredDocumentation: ["calling protocol"],
     description: "call to social security and provide the protocol number"
   }
@@ -14,7 +14,7 @@ export const SUB_PROCESS = [
 
 export const CREATE_PROCESS_WITH_SUBPROCESS_AND_SUBPROCESS_WITH_DESCRIPTION = {
   name: "Make new relatory",
-  responsable: "Jose",
+  responsables: ["Jose"],
   requiredDocumentation: ["ID", "Social Security"],
   subprocess: SUB_PROCESS
 };

@@ -8,7 +8,7 @@ export interface IDepartament {
 export interface IProcess {
   requiredDocumentation?: string[];
   name: string;
-  responsable: string;
+  responsables: string[];
   status?: string;
   description?: string;
   subprocess?: Array<IProcessDto>;
@@ -17,7 +17,7 @@ export interface IProcess {
 export interface IProcessDto {
   requiredDocumentation?: string[];
   name: string;
-  responsable: string;
+  responsables: string[];
   description?: string;
   subprocess?: Array<IProcess>;
 }

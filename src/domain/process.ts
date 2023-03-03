@@ -9,7 +9,7 @@ import {
 export class Process {
   create({
     name,
-    responsable,
+    responsables,
     description = "",
     subprocess = []
   }: IProcessDto): IProcess {
@@ -28,7 +28,9 @@ export class Process {
     return {
       status: PROCESS_STATUS.pending,
       name: name.toLocaleLowerCase().trim(),
-      responsable: responsable.toLocaleLowerCase().trim(),
+      responsables: responsables.map((responsable) =>
+        responsable.toLocaleLowerCase().trim()
+      ),
       description: description,
       subprocess
     };

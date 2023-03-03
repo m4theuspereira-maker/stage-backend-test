@@ -19,7 +19,7 @@ describe("process", () => {
       ).toStrictEqual({
         status: "pending",
         name: "make new relatory",
-        responsable: "jose",
+        responsables: ["jose"],
         description: "",
         subprocess: []
       });
@@ -33,16 +33,16 @@ describe("process", () => {
       expect(processCreated).toEqual({
         status: "pending",
         name: "make new relatory",
-        responsable: "jose",
+        responsables: ["jose"],
         description: "",
         subprocess: expect.arrayContaining([
           {
             name: "get social security",
-            responsable: "carlos",
             requiredDocumentation: ["calling protocol"],
             description:
               "call to social security and provide the protocol number",
-            status: "pending"
+            status: "pending",
+            responsables: ["carlos", "romero"]
           }
         ])
       });
