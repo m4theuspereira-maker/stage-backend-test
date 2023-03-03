@@ -35,9 +35,6 @@ export class Process {
   }
 
   private validateDescription(description: string): IParamValidated {
-    if (!description.length) {
-    }
-
     if (description.length > 500) {
       return { isValid: false, error: TOO_MANY_CHARACTERS };
     }
