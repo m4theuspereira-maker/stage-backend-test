@@ -2,16 +2,16 @@ export interface IDepartament {
   cheif: string;
   name: string;
   team: Array<string>;
-  process?: Array<IProcess>;
+  process?: Array<IProcessDto>;
 }
 
 export interface IProcess {
   requiredDocumentation?: string[];
   name: string;
   responsable: string;
-  status: string;
+  status?: string;
   description?: string;
-  subprocess?: Array<IProcess>;
+  subprocess?: Array<IProcessDto>;
 }
 
 export interface IProcessDto {
