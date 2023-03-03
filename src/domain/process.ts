@@ -7,18 +7,30 @@ import {
 } from "./interfaces/interfaces";
 
 export class Process {
-  create({ name, responsable, description = "" }: IProcessDto): IProcess {
+  create({
+    name,
+    responsable,
+    description = "",
+    subprocess = []
+  }: IProcessDto): IProcess {
     const isValidParam = this.validateDescription(description!);
 
     if (!isValidParam.isValid) {
       throw new InvalidProcessDescriptionLength(isValidParam.error!);
     }
 
+    if (subprocess.length) {
+      subprocess.map(
+        (subprocess) => (subprocess.status = PROCESS_STATUS.pending)
+      );
+    }
+
     return {
       status: PROCESS_STATUS.pending,
       name: name.toLocaleLowerCase().trim(),
       responsable: responsable.toLocaleLowerCase().trim(),
-      description: description
+      description: description,
+      subprocess
     };
   }
 
