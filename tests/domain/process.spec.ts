@@ -57,4 +57,28 @@ describe("process", () => {
       ).toThrowError(TOO_MANY_CHARACTERS);
     });
   });
+
+  describe("validateDescription", () => {
+    beforeAll(() => {
+      process = new Process();
+    });
+
+    it("should return error message if description exceed 500 characters", () => {
+      const processValidated = process["validateDescription"](
+        DESCRIPTION_WITH_EXCEDED_LENGTH
+      );
+
+      expect(processValidated).toStrictEqual({
+        isValid: false,
+        error: TOO_MANY_CHARACTERS
+      });
+    });
+
+    it("should return isValid as true if description was valid", () => {
+      const processValidated =
+        process["validateDescription"]("valid description");
+
+      expect(processValidated.isValid).toBeTruthy();
+    });
+  });
 });
