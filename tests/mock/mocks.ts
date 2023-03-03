@@ -18,3 +18,13 @@ export const CREATE_PROCESS_WITH_SUBPROCESS_AND_SUBPROCESS_WITH_DESCRIPTION = {
   requiredDocumentation: ["ID", "Social Security"],
   subprocess: SUB_PROCESS
 };
+
+export const DESCRIPTION_WITH_EXCEDED_LENGTH = `Lorem ipsum dolor sit amet. Et impedit rerum aut accusamus fuga ea cumque nihil non quia neque. Rem sunt dolor in praesentium omnis aut tempore enim. Ut quaerat illo aut quia galisum non odio vitae et harum dolores sit dolore quisquam et veniam excepturi.
+Ut nihil repellat qui modi quia et quia cupiditate sit recusandae autem ad minima consequatur et quia officia est voluptatum eaque. Qui impedit optio est voluptas dolore aut nihil labore et maiores ducimus? Aut vero molestiae ut nobis nesciunt aut magni veniam ut sint neque sed rerum rerum non laborum quod. Sed harum dolorem non quibusdam amet ut beatae debitis in alias earum qui libero aspernatur est dignissimos sint sed expedita ullam.
+33 laborum tempore ut assumenda fugiat a facere vitae aut beatae harum ut enim vitae nam commodi facilis. Est voluptas libero vel galisum perspiciatis qui officia tenetur ad suscipit dolorem ut deleniti omnis est porro architecto ut suscipit magni.
+Lorem ipsum dolor sit amet. Et quas debitis non voluptas saepe a esse ratione aut blanditiis dolor est dolor quia aut rerum nulla. Est debitis dolorum et voluptates nihil et odit vero qui suscipit facere quo ullam possimus!
+Est expedita architecto ut laborum galisum et aperiam voluptatem. Ab error molestiae aut earum blanditiis et dolores nobis ut rerum debitis non numquam unde. Et sint perspiciatis At voluptatum voluptas et repellat voluptatem et delectus consequatur.
+Ut modi iste id numquam minima et dicta numquam nam eveniet cupiditate ut impedit voluptas. Sit nisi obcaecati ut rerum molestiae et laboriosam aliquid.
+Lorem ipsum dolor sit amet. Aut quasi enim et magnam quasi in voluptas odit est quidem dolores. Ut voluptatem suscipit ut consequuntur quia aut ducimus sunt? Ea maxime temporibus non obcaecati commodi et excepturi magni.
+Qui nesciunt minima qui magni reiciendis est quaerat sapiente et dolorem maxime aut provident magnam qui ipsa saepe vel consequatur velit. Aut accusantium dolor et optio fuga et quam eaque. Id consequatur dolorem qui galisum saepe rem quia perferendis.
+Hic quia impedit est dolores doloremque a voluptatem maiores ut culpa quam. Est obcaecati maiores nam beatae eaque sit Quis mollitia eos molestiae totam aut pariatur quia et molestiae nemo.`;

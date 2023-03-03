@@ -2,7 +2,9 @@ import { Process } from "../../src/domain/process";
 import {
   CREATE_PROCESS_WITHOUT_SUBPROCESS_AND_DESCRIPTION,
   CREATE_PROCESS_WITH_SUBPROCESS_AND_SUBPROCESS_WITH_DESCRIPTION,
+  DESCRIPTION_WITH_EXCEDED_LENGTH
 } from "../mock/mocks";
+import { TOO_MANY_CHARACTERS } from "../../src/domain/constants/constants";
 
 describe("process", () => {
   let process: Process;
@@ -44,6 +46,15 @@ describe("process", () => {
           }
         ])
       });
+    });
+
+    it("should throw error if description length exceed 500 characters", () => {
+      expect(() =>
+        process.create({
+          ...CREATE_PROCESS_WITHOUT_SUBPROCESS_AND_DESCRIPTION,
+          description: DESCRIPTION_WITH_EXCEDED_LENGTH
+        })
+      ).toThrowError(TOO_MANY_CHARACTERS);
     });
   });
 });
