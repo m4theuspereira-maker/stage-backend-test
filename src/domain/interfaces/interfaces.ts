@@ -1,7 +1,7 @@
 export interface IDepartament {
-  cheif: string;
+  chief: string;
   name: string;
-  team: Array<string>;
+  team: string[];
   process?: Array<IProcessDto>;
 }
 
@@ -11,7 +11,7 @@ export interface IProcess {
   responsables: string[];
   status?: string;
   description?: string;
-  subprocess?: Array<IProcessDto>;
+  subprocess?: IProcessDto[];
 }
 
 export interface IProcessDto {
@@ -19,7 +19,7 @@ export interface IProcessDto {
   name: string;
   responsables: string[];
   description?: string;
-  subprocess?: Array<IProcess>;
+  subprocess?: IProcess[];
 }
 
 export interface IParamValidated {

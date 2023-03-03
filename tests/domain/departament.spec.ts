@@ -13,14 +13,19 @@ describe("Departament", () => {
     });
 
     it("shoud throw error too lower characters if name was short", () => {
-      expect(() => departament.create("ema", "a", ["edmond", "bosco"])).toThrowError(
-        TOO_LOWER_CHARACTERS
-      );
+      expect(() =>
+        departament.create("ema", "a", ["edmond", "bosco"])
+      ).toThrowError(TOO_LOWER_CHARACTERS);
     });
 
     it("should throw too many characters of name has more than 10 characters", () => {
       expect(() =>
-        departament.create("ema", "super departament super idol", ["charles"])
+        departament.create(
+          "ema",
+          `super departament super idol de xiàoróng
+          dōu méi nǐ de tián bā yuè zhèngwǔ de yángguāng`,
+          ["charles"]
+        )
       ).toThrowError(TOO_MANY_CHARACTERS);
     });
   });
@@ -38,7 +43,8 @@ describe("Departament", () => {
 
     it("should return false and error too lower characters name", () => {
       expect(
-        departament["validateName"]("super departament super idol")
+        departament["validateName"](`super departament super idol de xiàoróng
+        dōu méi nǐ de tián bā yuè zhèngwǔ de yángguāng`)
       ).toEqual({
         isValid: false,
         error: TOO_MANY_CHARACTERS

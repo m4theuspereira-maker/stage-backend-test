@@ -6,7 +6,7 @@ import { InvalidDepartamentNameExeption } from "./error/erros";
 import { IDepartament, IParamValidated } from "./interfaces/interfaces";
 
 export class Departament {
-  create(cheif: string, name: string, team: string[]): IDepartament {
+  create(chief: string, name: string, team: string[]): IDepartament {
     const nameValidated = this.validateName(name);
 
     if (!nameValidated.isValid) {
@@ -14,7 +14,7 @@ export class Departament {
     }
 
     return {
-      cheif: cheif.toLocaleLowerCase().trim(),
+      chief: chief.toLocaleLowerCase().trim(),
       name: name.toLocaleLowerCase().trim(),
       team: team.map((member) => member.toLocaleLowerCase().trim())
     };
