@@ -1,13 +1,22 @@
 import { Departament } from "../../src/domain/departament";
 import { IDepartament } from "../../src/domain/interfaces/interfaces";
+import { Process as ProcessDomain } from "../domain/process";
 
 export class DepartamentService {
-  constructor(private readonly departament: Departament) {}
+  constructor(private readonly departamentDomain: Departament) {}
 
   async createdDepartament({ chief, name, team }: IDepartament) {
-    const departamentCreated = this.departament.create(chief, name, team);
+    try {
+      const departamentCreated = this.departamentDomain.create(
+        chief,
+        name,
+        team
+      );
 
-    console.log(departamentCreated);
+      console.log(departamentCreated);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 

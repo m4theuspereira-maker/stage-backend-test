@@ -19,6 +19,12 @@ export const CREATE_PROCESS_WITH_SUBPROCESS_AND_SUBPROCESS_WITH_DESCRIPTION = {
   subprocess: SUB_PROCESS
 };
 
+export const CREATE_DEPARTAMENT = {
+  name: "Juridic",
+  chief: "John Doe",
+  team: ["Anderson", "Armando", "Hector"]
+};
+
 export const DESCRIPTION_WITH_EXCEDED_LENGTH = `Lorem ipsum dolor sit amet. Et impedit rerum aut accusamus fuga ea cumque nihil non quia neque. Rem sunt dolor in praesentium omnis aut tempore enim. Ut quaerat illo aut quia galisum non odio vitae et harum dolores sit dolore quisquam et veniam excepturi.
 Ut nihil repellat qui modi quia et quia cupiditate sit recusandae autem ad minima consequatur et quia officia est voluptatum eaque. Qui impedit optio est voluptas dolore aut nihil labore et maiores ducimus? Aut vero molestiae ut nobis nesciunt aut magni veniam ut sint neque sed rerum rerum non laborum quod. Sed harum dolorem non quibusdam amet ut beatae debitis in alias earum qui libero aspernatur est dignissimos sint sed expedita ullam.
 33 laborum tempore ut assumenda fugiat a facere vitae aut beatae harum ut enim vitae nam commodi facilis. Est voluptas libero vel galisum perspiciatis qui officia tenetur ad suscipit dolorem ut deleniti omnis est porro architecto ut suscipit magni.
