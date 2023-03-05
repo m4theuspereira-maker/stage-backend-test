@@ -28,3 +28,15 @@ export class InvalidProcessNameExpection implements Error {
     this.message = message;
   }
 }
+
+export class InternalServerErrorExpection implements Error {
+  name: string;
+  message: string;
+
+  constructor(message: string, stack: any) {
+    this.name = "InternalServerErrorExpection";
+    this.message = message;
+
+    console.log(stack);
+  }
+}

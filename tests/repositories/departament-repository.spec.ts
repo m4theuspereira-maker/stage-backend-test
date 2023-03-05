@@ -1,42 +1,127 @@
-import { PrismaClient, Departament } from "@prisma/client";
+import { PrismaClient, Departament, Prisma } from "@prisma/client";
 import { ObjectId } from "mongodb";
-import { IDepartament } from "../domain/interfaces/interfaces";
-import { CREATE_DEPARTAMENT } from "../config/mock/mocks";
+import { IDepartament, IDepartamentDto } from "../domain/interfaces/interfaces";
+import {
+  CREATE_DEPARTAMENT,
+  DEPARTAMENT_UPDATED_RESPONSE,
+  INTERNAL_SERVER_ERROR_MESSAGE
+} from "../config/mock/mocks";
 import { IRepository } from "./interfaces/repository";
+import { InternalServerErrorExpection } from "../../src/domain/error/erros";
+import MockDate from "mockdate";
+
+const prismaclient = new PrismaClient();
 
 export class DepartamentRespository implements IRepository {
   constructor(private readonly client: PrismaClient) {}
 
   async create({ chief, name, team }: IDepartament): Promise<Departament> {
-    const departamenteCreated = await this.client.departament.create({
-      data: { id: new ObjectId().toString(), chief, name, team }
-    });
+    try {
+      return this.client.departament.create({
+        data: { id: new ObjectId().toString(), chief, name, team }
+      });
+    } catch (error: any) {
+      throw new InternalServerErrorExpection(error.message, error);
+    }
+  }
 
-    console.log(departamenteCreated);
-
-    return departamenteCreated;
+  async update(
+    id: string,
+    updatePlayload: IDepartamentDto
+  ): Promise<Departament> {
+    try {
+      delete updatePlayload.process;
+      return this.client.departament.update({
+        where: { id },
+        data: {
+          ...updatePlayload,
+          updatedAt: new Date()
+        } as Prisma.ProcessUncheckedUpdateInput
+      });
+    } catch (error: any) {
+      throw new InternalServerErrorExpection(error.message, error);
+    }
   }
 }
 
 describe("DepartamentRepository", () => {
-  let client: any;
-  // beforeAll(async () => {
-  //   client = await startDatabase();
-  // });
-  it("should return a departament", async () => {
+  let departamentSpy: any;
 
-    const a =  {
-      id: '640381faac89773044d6e1b3',
-      name: 'Juridic',
-      team: [ 'Anderson', 'Armando', 'Hector' ],
-      chief: 'John Doe',
-      createdAt: new Date(`2023-03-04T17:38:02.768Z`),
-      deletedAt: null,
-      updatedAt: null
-    }
-    const departament = new DepartamentRespository(new PrismaClient());
-    await departament.create(CREATE_DEPARTAMENT);
+  beforeAll(() => {
+    MockDate.set(new Date());
+  });
+  describe("create", () => {
+    it("should call prisma client with correct params", async () => {
+      departamentSpy = jest
+        .spyOn(prismaclient.departament, "create")
+        .mockResolvedValueOnce(null as any);
 
-    expect(1).toBe(1);
+      const departament = new DepartamentRespository(prismaclient);
+      await departament.create(CREATE_DEPARTAMENT);
+
+      expect(departamentSpy).toHaveBeenCalledWith({
+        data: {
+          id: expect.stringMatching(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i),
+          ...CREATE_DEPARTAMENT
+        }
+      });
+    });
+
+    it("should throw an error of prisma client were called with wrong params", async () => {
+      jest
+        .spyOn(prismaclient.departament, "create")
+        .mockRejectedValueOnce(new Error(INTERNAL_SERVER_ERROR_MESSAGE));
+
+      await expect(() =>
+        new DepartamentRespository(prismaclient).create(CREATE_DEPARTAMENT)
+      ).rejects.toThrow(
+        new InternalServerErrorExpection(
+          INTERNAL_SERVER_ERROR_MESSAGE,
+          expect.anything()
+        )
+      );
+    });
+  });
+
+  describe("update", () => {
+    it("should call primsa client update with correct params", async () => {
+      departamentSpy = jest
+        .spyOn(prismaclient.departament, "update")
+        .mockResolvedValueOnce(null as any);
+
+      const departament = new DepartamentRespository(prismaclient);
+
+      await departament.update(String(DEPARTAMENT_UPDATED_RESPONSE.id), {
+        name: "financial"
+      });
+
+      expect(departamentSpy).toBeCalledWith({
+        where: { id: String(DEPARTAMENT_UPDATED_RESPONSE.id) },
+        data: {
+          name: "financial",
+          updatedAt: new Date()
+        }
+      });
+    });
+
+    it("should throw internal server error if prisma client throws", async () => {
+      jest
+        .spyOn(prismaclient.departament, "update")
+        .mockRejectedValueOnce(new Error(INTERNAL_SERVER_ERROR_MESSAGE));
+
+      await expect(() =>
+        new DepartamentRespository(prismaclient).update(
+          String(DEPARTAMENT_UPDATED_RESPONSE.id),
+          {
+            name: "financial"
+          }
+        )
+      ).rejects.toThrowError(
+        new InternalServerErrorExpection(
+          INTERNAL_SERVER_ERROR_MESSAGE,
+          expect.anything()
+        )
+      );
+    });
   });
 });

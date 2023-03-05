@@ -5,6 +5,14 @@ export interface IDepartament {
   process?: Array<IProcessDto>;
 }
 
+export interface IDepartamentDto {
+  id?: string;
+  chief?: string;
+  name?: string;
+  team?: string[];
+  process?: Array<IProcessDto>;
+}
+
 export interface IProcess {
   requiredDocumentation?: string[];
   name: string;

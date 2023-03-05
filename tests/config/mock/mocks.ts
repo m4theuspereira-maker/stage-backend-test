@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+
 export const CREATE_PROCESS_WITHOUT_SUBPROCESS_AND_DESCRIPTION = {
   name: "Make new relatory",
   responsables: ["Jose"]
@@ -34,3 +36,26 @@ Ut modi iste id numquam minima et dicta numquam nam eveniet cupiditate ut impedi
 Lorem ipsum dolor sit amet. Aut quasi enim et magnam quasi in voluptas odit est quidem dolores. Ut voluptatem suscipit ut consequuntur quia aut ducimus sunt? Ea maxime temporibus non obcaecati commodi et excepturi magni.
 Qui nesciunt minima qui magni reiciendis est quaerat sapiente et dolorem maxime aut provident magnam qui ipsa saepe vel consequatur velit. Aut accusantium dolor et optio fuga et quam eaque. Id consequatur dolorem qui galisum saepe rem quia perferendis.
 Hic quia impedit est dolores doloremque a voluptatem maiores ut culpa quam. Est obcaecati maiores nam beatae eaque sit Quis mollitia eos molestiae totam aut pariatur quia et molestiae nemo.`;
+
+export const CREATE_DEPARTAMENT_RETURN_MOCK = {
+  id: "640381faac89773044d6e1b3",
+  name: "Juridic",
+  team: ["Anderson", "Armando", "Hector"],
+  chief: "John Doe",
+  createdAt: new Date(`2023-03-04T17:38:02.768Z`),
+  deletedAt: null,
+  updatedAt: null
+};
+
+export const INTERNAL_SERVER_ERROR_MESSAGE =
+  "Internal Server Error, see the logs to get more informations";
+
+export const DEPARTAMENT_UPDATED_RESPONSE = {
+  id: new ObjectId("6403776e7206b337b2aa1bcc"),
+  name: "financial",
+  team: ["Anderson", "Armando", "Hector"],
+  chief: "John Doe",
+  createdAt: new Date("2023-03-04T16:53:03.460Z"),
+  deletedAt: null,
+  updatedAt: new Date("2023-03-05T16:44:54.281Z")
+};
