@@ -4,6 +4,7 @@ import { IDepartament, IDepartamentDto } from "../domain/interfaces/interfaces";
 import {
   CREATE_DEPARTAMENT,
   DEPARTAMENT_UPDATED_RESPONSE,
+  FIND_MANY_DEPARTMENT_MOCKS,
   INTERNAL_SERVER_ERROR_MESSAGE
 } from "../config/mock/mocks";
 import { IRepository } from "./interfaces/repository";
@@ -14,6 +15,10 @@ const prismaclient = new PrismaClient();
 
 export class DepartamentRespository implements IRepository {
   constructor(private readonly client: PrismaClient) {}
+
+  findOne(input: any): Promise<any> {
+    throw new Error("Method not implemented.");
+  }
 
   async create({ chief, name, team }: IDepartament): Promise<Departament> {
     try {
@@ -39,6 +44,17 @@ export class DepartamentRespository implements IRepository {
         } as Prisma.ProcessUncheckedUpdateInput
       });
     } catch (error: any) {
+      throw new InternalServerErrorExpection(error.message, error);
+    }
+  }
+
+  async findMany(): Promise<Departament[] | []> {
+    try {
+      return (await this.client.departament.findMany()).filter(
+        (departament) => !departament.deletedAt
+      );
+    } catch (error: any) {
+      console.log(error);
       throw new InternalServerErrorExpection(error.message, error);
     }
   }
@@ -122,6 +138,48 @@ describe("DepartamentRepository", () => {
           expect.anything()
         )
       );
+    });
+  });
+
+  describe("findMany", () => {
+    // it("show throw if prisma client throws", async () => {
+    //   jest
+    //     .spyOn(prismaclient.departament, "findMany")
+    //     .mockImplementationOnce(() =>new Error(INTERNAL_SERVER_ERROR_MESSAGE));
+
+    //   await expect(() =>
+    //     new DepartamentRespository(prismaclient).findMany()
+    //   ).rejects.toThrow(
+    //     new InternalServerErrorExpection(
+    //       INTERNAL_SERVER_ERROR_MESSAGE,
+    //       expect.anything()
+    //     )
+    //   );
+    // });
+    it("should return only departaments that has not deletedAt", async () => {
+      jest
+        .spyOn(prismaclient.departament, "findMany")
+        .mockResolvedValueOnce(FIND_MANY_DEPARTMENT_MOCKS);
+
+      const departaments = await new DepartamentRespository(
+        prismaclient
+      ).findMany();
+
+      expect(departaments).toHaveLength(1);
+    });
+
+    it("should return an empty array if all elemets had deletedAt defined", async () => {
+      jest.spyOn(prismaclient.departament, "findMany").mockResolvedValueOnce(
+        FIND_MANY_DEPARTMENT_MOCKS.map((departament) => {
+          return { ...departament, deletedAt: new Date() };
+        })
+      );
+
+      const departaments = await new DepartamentRespository(
+        prismaclient
+      ).findMany();
+
+      expect(!departaments.length).toBeTruthy();
     });
   });
 });

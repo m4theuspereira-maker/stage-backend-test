@@ -12,8 +12,6 @@ export class DepartamentService {
         name,
         team
       );
-
-      console.log(departamentCreated);
     } catch (error) {
       console.log(error);
     }

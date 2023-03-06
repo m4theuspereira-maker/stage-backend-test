@@ -59,3 +59,33 @@ export const DEPARTAMENT_UPDATED_RESPONSE = {
   deletedAt: null,
   updatedAt: new Date("2023-03-05T16:44:54.281Z")
 };
+
+export const FIND_MANY_DEPARTMENT_MOCKS = [
+  {
+    id: "6403776e7206b337b2aa1bcc",
+    name: "financial",
+    team: ["Anderson", "Armando", "Hector"],
+    chief: "John Doe",
+    createdAt: new Date("2023-03-04T16:53:03.460Z"),
+    deletedAt: new Date(),
+    updatedAt: new Date("2023-03-05T16:44:54.281Z")
+  },
+  {
+    id: "640381faac89773044d6e1b3",
+    name: "Juridic",
+    team: ["Anderson", "Armando", "Hector"],
+    chief: "John Doe",
+    createdAt: new Date("2023-03-04T17:38:02.768Z"),
+    deletedAt: new Date(),
+    updatedAt: null
+  },
+  {
+    id: "6404851e1aa4321286225311",
+    name: "Juridic",
+    team: ["Anderson", "Armando", "Hector"],
+    chief: "John Doe",
+    createdAt: new Date("2023-03-05T12:03:42.839Z"),
+    deletedAt: null,
+    updatedAt: null
+  }
+];
