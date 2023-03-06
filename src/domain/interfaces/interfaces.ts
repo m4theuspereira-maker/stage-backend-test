@@ -2,7 +2,7 @@ export interface IDepartament {
   chief: string;
   name: string;
   team: string[];
-  process?: Array<IProcessDto>;
+  process?: IProcessDto[];
 }
 
 export interface IDepartamentDto {
@@ -10,7 +10,10 @@ export interface IDepartamentDto {
   chief?: string;
   name?: string;
   team?: string[];
-  process?: Array<IProcessDto>;
+  process?: IProcessDto[];
+  deletedAt?: Date;
+  updatedAt?: Date;
+  createdAt?: Date;
 }
 
 export interface IProcess {

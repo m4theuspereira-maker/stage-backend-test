@@ -13,17 +13,26 @@ import MockDate from "mockdate";
 
 const prismaclient = new PrismaClient();
 
+export interface IFindOneDepartamentDto {
+  id?: string;
+  chief?: string;
+  name?: string;
+  team?: Prisma.StringNullableListFilter;
+}
+
 export class DepartamentRespository implements IRepository {
   constructor(private readonly client: PrismaClient) {}
-
-  findOne(input: any): Promise<any> {
-    throw new Error("Method not implemented.");
-  }
 
   async create({ chief, name, team }: IDepartament): Promise<Departament> {
     try {
       return this.client.departament.create({
-        data: { id: new ObjectId().toString(), chief, name, team }
+        data: {
+          id: new ObjectId().toString(),
+          chief,
+          name,
+          team,
+          deletedAt: null
+        }
       });
     } catch (error: any) {
       throw new InternalServerErrorExpection(error.message, error);
@@ -54,7 +63,19 @@ export class DepartamentRespository implements IRepository {
         (departament) => !departament.deletedAt
       );
     } catch (error: any) {
-      console.log(error);
+      throw new InternalServerErrorExpection(error.message, error);
+    }
+  }
+
+  findOne(input: IFindOneDepartamentDto): Promise<Departament | null> {
+    try {
+      return this.client.departament.findFirst({
+        where: {
+          ...input,
+          deletedAt: null
+        }
+      });
+    } catch (error: any) {
       throw new InternalServerErrorExpection(error.message, error);
     }
   }
@@ -78,7 +99,8 @@ describe("DepartamentRepository", () => {
       expect(departamentSpy).toHaveBeenCalledWith({
         data: {
           id: expect.stringMatching(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i),
-          ...CREATE_DEPARTAMENT
+          ...CREATE_DEPARTAMENT,
+          deletedAt: null
         }
       });
     });
@@ -180,6 +202,42 @@ describe("DepartamentRepository", () => {
       ).findMany();
 
       expect(!departaments.length).toBeTruthy();
+    });
+  });
+
+  describe("findOne", () => {
+    it("should call prisma client with correct params", async () => {
+      departamentSpy = jest
+        .spyOn(prismaclient.departament, "findFirst")
+        .mockResolvedValueOnce(null);
+
+      const departament = new DepartamentRespository(prismaclient);
+
+      departament.findOne({ id: "6405ee50958ef4c30eb9d0a0" });
+
+      expect(departamentSpy).toBeCalledWith({
+        where: {
+          deletedAt: null,
+          id: expect.stringMatching(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i)
+        }
+      });
+    });
+
+    it("should aa ", async () => {
+      jest
+        .spyOn(prismaclient.departament, "findFirst")
+        .mockRejectedValueOnce(new Error(INTERNAL_SERVER_ERROR_MESSAGE));
+
+      await expect(() =>
+        new DepartamentRespository(prismaclient).findOne({
+          name: "financial"
+        })
+      ).rejects.toThrowError(
+        new InternalServerErrorExpection(
+          INTERNAL_SERVER_ERROR_MESSAGE,
+          expect.anything()
+        )
+      );
     });
   });
 });
