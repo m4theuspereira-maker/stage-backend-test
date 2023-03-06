@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client";
+
 export interface IRepository {
   create(input: any): Promise<any>;
 
@@ -6,4 +8,11 @@ export interface IRepository {
   findMany(): Promise<any>;
 
   findOne(input: any): Promise<any>;
+}
+
+export interface IFindOneDepartamentDto {
+  id?: string;
+  chief?: string;
+  name?: string;
+  team?: Prisma.StringNullableListFilter;
 }

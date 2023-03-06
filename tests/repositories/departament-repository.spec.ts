@@ -1,87 +1,17 @@
-import { PrismaClient, Departament, Prisma } from "@prisma/client";
-import { ObjectId } from "mongodb";
-import { IDepartament, IDepartamentDto } from "../domain/interfaces/interfaces";
+import { PrismaClient } from "@prisma/client";
+import { DepartamentRespository } from "../../src/repositories/departament-repository";
 import {
   CREATE_DEPARTAMENT,
   DEPARTAMENT_UPDATED_RESPONSE,
   FIND_MANY_DEPARTMENT_MOCKS,
   INTERNAL_SERVER_ERROR_MESSAGE
 } from "../config/mock/mocks";
-import { IRepository } from "./interfaces/repository";
 import { InternalServerErrorExpection } from "../../src/domain/error/erros";
 import MockDate from "mockdate";
 
-const prismaclient = new PrismaClient();
-
-export interface IFindOneDepartamentDto {
-  id?: string;
-  chief?: string;
-  name?: string;
-  team?: Prisma.StringNullableListFilter;
-}
-
-export class DepartamentRespository implements IRepository {
-  constructor(private readonly client: PrismaClient) {}
-
-  async create({ chief, name, team }: IDepartament): Promise<Departament> {
-    try {
-      return this.client.departament.create({
-        data: {
-          id: new ObjectId().toString(),
-          chief,
-          name,
-          team,
-          deletedAt: null
-        }
-      });
-    } catch (error: any) {
-      throw new InternalServerErrorExpection(error.message, error);
-    }
-  }
-
-  async update(
-    id: string,
-    updatePlayload: IDepartamentDto
-  ): Promise<Departament> {
-    try {
-      delete updatePlayload.process;
-      return this.client.departament.update({
-        where: { id },
-        data: {
-          ...updatePlayload,
-          updatedAt: new Date()
-        } as Prisma.ProcessUncheckedUpdateInput
-      });
-    } catch (error: any) {
-      throw new InternalServerErrorExpection(error.message, error);
-    }
-  }
-
-  async findMany(): Promise<Departament[] | []> {
-    try {
-      return (await this.client.departament.findMany()).filter(
-        (departament) => !departament.deletedAt
-      );
-    } catch (error: any) {
-      throw new InternalServerErrorExpection(error.message, error);
-    }
-  }
-
-  findOne(input: IFindOneDepartamentDto): Promise<Departament | null> {
-    try {
-      return this.client.departament.findFirst({
-        where: {
-          ...input,
-          deletedAt: null
-        }
-      });
-    } catch (error: any) {
-      throw new InternalServerErrorExpection(error.message, error);
-    }
-  }
-}
-
 describe("DepartamentRepository", () => {
+  const prismaclient = new PrismaClient();
+
   let departamentSpy: any;
 
   beforeAll(() => {
@@ -164,20 +94,6 @@ describe("DepartamentRepository", () => {
   });
 
   describe("findMany", () => {
-    // it("show throw if prisma client throws", async () => {
-    //   jest
-    //     .spyOn(prismaclient.departament, "findMany")
-    //     .mockImplementationOnce(() =>new Error(INTERNAL_SERVER_ERROR_MESSAGE));
-
-    //   await expect(() =>
-    //     new DepartamentRespository(prismaclient).findMany()
-    //   ).rejects.toThrow(
-    //     new InternalServerErrorExpection(
-    //       INTERNAL_SERVER_ERROR_MESSAGE,
-    //       expect.anything()
-    //     )
-    //   );
-    // });
     it("should return only departaments that has not deletedAt", async () => {
       jest
         .spyOn(prismaclient.departament, "findMany")
