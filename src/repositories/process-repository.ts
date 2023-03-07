@@ -39,15 +39,6 @@ export class ProcessRepository implements IRepository {
     }
   }
 
-  async findMany(): Promise<Process[] | []> {
-    try {
-      return (await this.client.process.findMany()).filter(
-        (process) => !process.deletedAt
-      );
-    } catch (error: any) {
-      throw new InternalServerErrorExpection(error.message, error);
-    }
-  }
   findOne(input: IProcessDto): Promise<Process | null> {
     try {
       return this.client.process.findFirst({
@@ -85,5 +76,9 @@ export class ProcessRepository implements IRepository {
     } catch (error: any) {
       throw new InternalServerErrorExpection(error.message, error);
     }
+  }
+
+  findMany(input?: any): Promise<any> {
+    throw new Error("Method not implemented.");
   }
 }
