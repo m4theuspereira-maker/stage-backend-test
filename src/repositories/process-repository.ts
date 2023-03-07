@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient, Process } from "@prisma/client";
 import { ObjectId } from "mongodb";
 import { InternalServerErrorExpection } from "../domain/error/erros";
-import { IProcessDto } from "../domain/interfaces/interfaces";
+import { IProcessDto, ISubprocess } from "../domain/interfaces/interfaces";
 import {
   ICreateProcessDto,
   IRepository,
@@ -78,7 +78,13 @@ export class ProcessRepository implements IRepository {
     }
   }
 
-  findMany(input?: any): Promise<any> {
-    throw new Error("Method not implemented.");
+  findMany(input: IProcessDto): Promise<Process[] | []> {
+    try {
+      return this.client.process.findMany({
+        where: { ...input, deletedAt: null } as Prisma.SubprocessWhereInput
+      });
+    } catch (error: any) {
+      throw new InternalServerErrorExpection(error.message, error);
+    }
   }
 }

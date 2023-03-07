@@ -196,4 +196,42 @@ describe("ProcessRepository", () => {
       );
     });
   });
+
+  describe("findMany", () => {
+    it("should call findMany with correct params", async () => {
+      processSpy = jest
+        .spyOn(prismaClient.process, "findMany")
+        .mockResolvedValueOnce([]);
+
+      await processRepository.findMany({
+        departamentId: "6405ee50958ef4c30eb9d0a0"
+      });
+
+      expect(processSpy).toHaveBeenCalledWith({
+        where: {
+          departamentId: expect.stringMatching(
+            /^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i
+          ),
+          deletedAt: null
+        }
+      });
+    });
+
+    it("should throw if findmany throws", async () => {
+      jest
+        .spyOn(prismaClient.process, "findMany")
+        .mockRejectedValueOnce(new Error(INTERNAL_SERVER_ERROR_MESSAGE));
+
+      await expect(() =>
+        new ProcessRepository(prismaClient).findMany({
+          departamentId: "6405ee50958ef4c30eb9d0a0"
+        })
+      ).rejects.toThrow(
+        new InternalServerErrorExpection(
+          INTERNAL_SERVER_ERROR_MESSAGE,
+          expect.anything()
+        )
+      );
+    });
+  });
 });
