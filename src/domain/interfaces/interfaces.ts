@@ -39,3 +39,8 @@ export interface IParamValidated {
   isValid: boolean;
   error?: string;
 }
+
+export interface ISubprocess extends IProcessDto {
+  processId?: string;
+  subprocessId?: string
+}
