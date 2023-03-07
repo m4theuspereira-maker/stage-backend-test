@@ -3,16 +3,21 @@ import { ObjectId } from "mongodb";
 import { IRepository } from "../../src/repositories/interfaces/repository";
 import { InternalServerErrorExpection } from "../../src/domain/error/erros";
 import { ISubprocess } from "../domain/interfaces/interfaces";
-
+import MockDate from "mockdate";
+import {
+  CREATE_SUBPROCESS_MOCK,
+  INTERNAL_SERVER_ERROR_MESSAGE
+} from "../config/mock/mocks";
 export class SubprocessRepository implements IRepository {
   constructor(private readonly client: PrismaClient) {}
 
-  create(input: ISubprocess): Promise<Subprocess> {
+  async create(input: ISubprocess): Promise<Subprocess> {
     try {
       return this.client.subprocess.create({
         data: {
           id: new ObjectId().toString(),
           ...input,
+          createdAt: new Date(),
           deletedAt: null
         } as Prisma.SubprocessUncheckedCreateInput
       });
@@ -20,9 +25,21 @@ export class SubprocessRepository implements IRepository {
       throw new InternalServerErrorExpection(error.message, error);
     }
   }
-  update(id: string, updatePlayload: any): Promise<any> {
-    throw new Error("Method not implemented.");
+
+  async update(id: string, updatePlayload: ISubprocess): Promise<Subprocess> {
+    try {
+      return this.client.subprocess.update({
+        where: { id },
+        data: {
+          ...updatePlayload,
+          updatedAt: new Date()
+        } as Prisma.SubprocessUncheckedUpdateInput
+      });
+    } catch (error: any) {
+      throw new InternalServerErrorExpection(error.message, error);
+    }
   }
+
   findMany(): Promise<any> {
     throw new Error("Method not implemented.");
   }
@@ -32,27 +49,88 @@ export class SubprocessRepository implements IRepository {
 }
 
 describe("SubprocessRepository", () => {
-  const prismaClient = new PrismaClient();
+  let subprocessSpy: any;
+  let prismaClient: PrismaClient;
+  let subprocessRepository: SubprocessRepository;
+  beforeAll(() => {
+    prismaClient = new PrismaClient();
+    MockDate.set(new Date());
+  });
 
   describe("create", () => {
     it("should call create prismaClient with correct params", async () => {
-      jest
-        .spyOn(prismaClient.departament, "create")
+      subprocessSpy = jest
+        .spyOn(prismaClient.subprocess, "create")
         .mockResolvedValueOnce(null as any);
-      const subprocessRepository = new SubprocessRepository(prismaClient);
 
-      const subprocessCreated = await subprocessRepository.create({
-        name: "get documents to authentication",
-        responsables: ["carlos", "romero"],
-        description: "it needs to be done as soon as possible",
-        departamentId: "6405ee50958ef4c30eb9d0a0",
-        processId: "640634318365384217b89203",
-        status: "doing"
+      subprocessRepository = new SubprocessRepository(prismaClient);
+
+      await subprocessRepository.create(CREATE_SUBPROCESS_MOCK);
+
+      expect(subprocessSpy).toHaveBeenCalledWith({
+        data: {
+          ...CREATE_SUBPROCESS_MOCK,
+          id: expect.stringMatching(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i),
+          departamentId: expect.stringMatching(
+            /^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i
+          ),
+          createdAt: new Date(),
+          deletedAt: null
+        }
       });
+    });
 
-      console.log(subprocessCreated);
+    it("should throw if prisma client throws", async () => {
+      jest
+        .spyOn(prismaClient.subprocess, "create")
+        .mockRejectedValueOnce(new Error(INTERNAL_SERVER_ERROR_MESSAGE));
 
-      expect(1).toBe(1);
+      await expect(() =>
+        new SubprocessRepository(prismaClient).create(CREATE_SUBPROCESS_MOCK)
+      ).rejects.toThrow(
+        new InternalServerErrorExpection(
+          INTERNAL_SERVER_ERROR_MESSAGE,
+          expect.anything()
+        )
+      );
+    });
+  });
+
+  describe("update", () => {
+    it("should call update client with correct params", async () => {
+      subprocessSpy = jest
+        .spyOn(prismaClient.subprocess, "update")
+        .mockResolvedValue(null as any);
+
+      new SubprocessRepository(prismaClient).update(
+        "6406a00f10ba2d58b4eaad3b",
+        { status: "done" }
+      );
+
+      expect(subprocessSpy).toHaveBeenCalledWith({
+        where: {
+          id: expect.stringMatching(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i)
+        },
+        data: { status: "done", updatedAt: new Date() }
+      });
+    });
+
+    it("should throw if  client throws", async () => {
+      jest
+        .spyOn(prismaClient.subprocess, "update")
+        .mockRejectedValueOnce(new Error(INTERNAL_SERVER_ERROR_MESSAGE));
+
+      await expect(() =>
+        new SubprocessRepository(prismaClient).update(
+          "6406a00f10ba2d58b4eaad3b",
+          { status: "done" }
+        )
+      ).rejects.toThrow(
+        new InternalServerErrorExpection(
+          INTERNAL_SERVER_ERROR_MESSAGE,
+          expect.anything()
+        )
+      );
     });
   });
 });

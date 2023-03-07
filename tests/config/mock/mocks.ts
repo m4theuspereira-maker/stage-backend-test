@@ -14,6 +14,15 @@ export const SUB_PROCESS = [
   }
 ];
 
+export const CREATE_SUBPROCESS_MOCK = {
+  name: "get documents to authentication",
+  responsables: ["carlos", "romero"],
+  description: "it needs to be done as soon as possible",
+  departamentId: "6405ee50958ef4c30eb9d0a0",
+  processId: "640634318365384217b89203",
+  status: "doing"
+};
+
 export const CREATE_PROCESS_WITH_SUBPROCESS_AND_SUBPROCESS_WITH_DESCRIPTION = {
   name: "Make new relatory",
   responsables: ["Jose"],
