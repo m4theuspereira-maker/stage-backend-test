@@ -10,7 +10,6 @@ import {
 import {
   IParamValidated,
   IProcess,
-  IProcessDto
 } from "./interfaces/interfaces";
 
 export class Process {
@@ -19,9 +18,9 @@ export class Process {
     responsables,
     description = "",
     subprocess = []
-  }: IProcessDto): IProcess {
+  }: IProcess): IProcess {
     const isValidParam = this.validateDescription(description!);
-    const isValidName = this.validateName(name);
+    const isValidName = this.validateName(name!);
 
     if (!isValidParam.isValid) {
       throw new InvalidProcessDescriptionLength(isValidParam.error!);

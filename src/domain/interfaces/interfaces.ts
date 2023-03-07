@@ -27,10 +27,12 @@ export interface IProcess {
 
 export interface IProcessDto {
   requiredDocumentation?: string[];
-  name: string;
-  responsables: string[];
+  name?: string;
+  responsables?: string[];
   description?: string;
   subprocess?: IProcess[];
+  departamentId?: string;
+  status?: string;
 }
 
 export interface IParamValidated {

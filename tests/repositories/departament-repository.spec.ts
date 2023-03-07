@@ -129,17 +129,26 @@ describe("DepartamentRepository", () => {
 
       const departament = new DepartamentRespository(prismaclient);
 
-      departament.findOne({ id: "6405ee50958ef4c30eb9d0a0" });
+      await departament.findOne({
+        id: "6405ee50958ef4c30eb9d0a0"
+      });
 
       expect(departamentSpy).toBeCalledWith({
         where: {
           deletedAt: null,
           id: expect.stringMatching(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i)
+        },
+        select: {
+          id: true,
+          name: true,
+          chief: true,
+          team: true,
+          createdAt: true,
+          process: true
         }
       });
     });
-
-    it("should aa ", async () => {
+    it("should throw if prisma client throws ", async () => {
       jest
         .spyOn(prismaclient.departament, "findFirst")
         .mockRejectedValueOnce(new Error(INTERNAL_SERVER_ERROR_MESSAGE));

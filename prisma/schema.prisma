@@ -10,7 +10,7 @@ datasource db {
 model Process {
     id                    String       @id @map("_id") @db.ObjectId
     name                  String
-    responsable           String[]
+    responsables          String[]
     requiredDocumentation String?
     description           String?
     status                String
@@ -26,10 +26,11 @@ model Process {
 model Subprocess {
     id                    String    @id @map("_id") @db.ObjectId
     name                  String
-    responsable           String[]
+    responsables          String[]
     requiredDocumentation String?
     description           String?
     status                String
+    subprocessId          String?   @db.ObjectId
     processId             String?   @db.ObjectId
     Process               Process?  @relation(fields: [processId], references: [id])
     departamentId         String?   @db.ObjectId

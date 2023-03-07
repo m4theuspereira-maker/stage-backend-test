@@ -89,3 +89,17 @@ export const FIND_MANY_DEPARTMENT_MOCKS = [
     updatedAt: null
   }
 ];
+
+export const PROCESS_CREATED_MOCK = {
+  id: "6406345e19cff05fd72230ef",
+  name: "make new relatory",
+  responsables: ["armando", "john"],
+  requiredDocumentation: null,
+  description: "call to social security office",
+  status: "pending",
+  processId: null,
+  departamentId: "6405ee50958ef4c30eb9d0a0",
+  createdAt: new Date("2023-03-06T18:43:43.063Z"),
+  deletedAt: null,
+  updatedAt: null
+};

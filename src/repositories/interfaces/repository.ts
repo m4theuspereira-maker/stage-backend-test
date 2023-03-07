@@ -1,4 +1,5 @@
 import { Prisma } from "@prisma/client";
+import { IProcessDto } from "../../domain/interfaces/interfaces";
 
 export interface IRepository {
   create(input: any): Promise<any>;
@@ -15,4 +16,8 @@ export interface IFindOneDepartamentDto {
   chief?: string;
   name?: string;
   team?: Prisma.StringNullableListFilter;
+}
+
+export interface ICreateProcessDto extends IProcessDto {
+  Subprocess?: Prisma.SubprocessUncheckedCreateNestedManyWithoutProcessInput;
 }
