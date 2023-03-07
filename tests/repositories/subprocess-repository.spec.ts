@@ -3,7 +3,8 @@ import { InternalServerErrorExpection } from "../../src/domain/error/erros";
 import MockDate from "mockdate";
 import {
   CREATE_SUBPROCESS_MOCK,
-  INTERNAL_SERVER_ERROR_MESSAGE
+  INTERNAL_SERVER_ERROR_MESSAGE,
+  UPDATED_MANY_COUNT_MOCK
 } from "../config/mock/mocks";
 import { SubprocessRepository } from "../../src/repositories/subprocess-repository";
 import { faker } from "@faker-js/faker";
@@ -163,6 +164,46 @@ describe("SubprocessRepository", () => {
         new SubprocessRepository(prismaClient).findOne({
           id: "6406a00f10ba2d58b4eaad3b"
         })
+      ).rejects.toThrow(
+        new InternalServerErrorExpection(
+          INTERNAL_SERVER_ERROR_MESSAGE,
+          expect.anything()
+        )
+      );
+    });
+  });
+
+  describe("updateManyByProcessOrSubprocessId", () => {
+    it("should call updateMany with correct params", async () => {
+      subprocessSpy = jest
+        .spyOn(prismaClient.subprocess, "updateMany")
+        .mockResolvedValueOnce(UPDATED_MANY_COUNT_MOCK);
+
+      subprocessRepository = new SubprocessRepository(prismaClient);
+
+      await subprocessRepository.updateManyByProcessOrSubprocessId(
+        { subprocessId: "64078fd1f3e5f6dd3417d1b2" },
+        { deletedAt: new Date() }
+      );
+
+      expect(subprocessSpy).toHaveBeenCalledWith({
+        where: { subprocessId: "64078fd1f3e5f6dd3417d1b2" },
+        data: { deletedAt: new Date(), updatedAt: new Date() }
+      });
+    });
+
+    it("should throw if client throws", async () => {
+      jest
+        .spyOn(prismaClient.subprocess, "updateMany")
+        .mockRejectedValueOnce(new Error(INTERNAL_SERVER_ERROR_MESSAGE));
+
+      await expect(() =>
+        new SubprocessRepository(
+          prismaClient
+        ).updateManyByProcessOrSubprocessId(
+          { subprocessId: "64078fd1f3e5f6dd3417d1b2" },
+          { deletedAt: new Date() }
+        )
       ).rejects.toThrow(
         new InternalServerErrorExpection(
           INTERNAL_SERVER_ERROR_MESSAGE,
