@@ -104,4 +104,52 @@ describe("ProcessRepository", () => {
       );
     });
   });
+
+  describe("findOne", () => {
+    it("should return a found organization", async () => {
+      processSpy = jest
+        .spyOn(prismaClient.process, "findFirst")
+        .mockResolvedValueOnce(null as any);
+
+      await processRepository.findOne({
+        id: `64062ba0ec8747ecfc348ccc`
+      });
+
+      expect(processSpy).toHaveBeenCalledWith({
+        where: {
+          id: expect.stringMatching(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i),
+          deletedAt: null
+        },
+        select: {
+          id: true,
+          name: true,
+          status: true,
+          requiredDocumentation: true,
+          responsables: true,
+          description: true,
+          departamentId: true,
+          processId: true,
+          createdAt: true,
+          Subprocess: true
+        }
+      });
+    });
+
+    it("should throw if client throws", async () => {
+      jest
+        .spyOn(prismaClient.process, "findFirst")
+        .mockRejectedValueOnce(new Error(INTERNAL_SERVER_ERROR_MESSAGE));
+
+      await expect(() =>
+        new ProcessRepository(prismaClient).findOne({
+          id: "6405ee50958ef4c30eb9d0a0"
+        })
+      ).rejects.toThrow(
+        new InternalServerErrorExpection(
+          INTERNAL_SERVER_ERROR_MESSAGE,
+          expect.anything()
+        )
+      );
+    });
+  });
 });

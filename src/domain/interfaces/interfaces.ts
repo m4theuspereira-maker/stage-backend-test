@@ -26,6 +26,7 @@ export interface IProcess {
 }
 
 export interface IProcessDto {
+  id?: string;
   requiredDocumentation?: string[];
   name?: string;
   responsables?: string[];

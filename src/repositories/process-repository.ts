@@ -36,11 +36,33 @@ export class ProcessRepository implements IRepository {
   }
 
   async findMany(): Promise<Process[] | []> {
-    return (await this.client.process.findMany()).filter(
-      (process) => !process.deletedAt
-    );
+    try {
+      return (await this.client.process.findMany()).filter(
+        (process) => !process.deletedAt
+      );
+    } catch (error: any) {
+      throw new InternalServerErrorExpection(error.message, error);
+    }
   }
   findOne(input: IProcessDto): Promise<Process | null> {
-    throw new Error("Method not implemented.");
+    try {
+      return this.client.process.findFirst({
+        where: { ...input, deletedAt: null } as Prisma.ProcessWhereInput,
+        select: {
+          id: true,
+          name: true,
+          status: true,
+          requiredDocumentation: true,
+          responsables: true,
+          description: true,
+          departamentId: true,
+          processId: true,
+          createdAt: true,
+          Subprocess: true
+        }
+      }) as any;
+    } catch (error: any) {
+      throw new InternalServerErrorExpection(error.message, error);
+    }
   }
 }

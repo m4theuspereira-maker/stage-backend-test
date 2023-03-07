@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /usr/sbin/yarn add mongo-memory-server -D
+  /usr/local/bin/node /usr/sbin/yarn add @type/faker -D
 
 PATH: 
   /home/matheus/.vscode-server/bin/92da9481c0904c6adfe372c12da3b7748d74bdcb/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files (x86)/Common Files/Oracle/Java/javapath:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Users/mathe/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/mathe/AppData/Local/Programs/Microsoft VS Code/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl:/var/lib/snapd/snap/bin:/home/matheus/.fzf/bin
@@ -14,7 +14,7 @@ Platform:
   linux x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/mongo-memory-server: Not found
+  Error: https://registry.yarnpkg.com/@type%2ffaker: Not found
       at params.callback [as _callback] (/usr/lib/node_modules/yarn/lib/cli.js:66145:18)
       at self.callback (/usr/lib/node_modules/yarn/lib/cli.js:140890:22)
       at Request.emit (node:events:513:28)
@@ -59,6 +59,7 @@ npm manifest:
       "eslint-plugin-node": "^11.1.0",
       "eslint-plugin-promise": "^6.0.0",
       "express": "^4.17.3",
+      "faker": "^6.6.6",
       "inquirer": "^8.2.2",
       "jest": "^27.5.1",
       "lodash": "^4.17.21",
@@ -69,6 +70,9 @@ npm manifest:
       "ts-jest": "^27.1.4",
       "ts-node": "^10.7.0",
       "typescript": "^4.6.3"
+    },
+    "devDependencies": {
+      "mockdate": "^3.0.5"
     }
   }
 
@@ -2215,6 +2219,11 @@ Lockfile:
       iconv-lite "^0.4.24"
       tmp "^0.0.33"
   
+  faker@^6.6.6:
+    version "6.6.6"
+    resolved "https://registry.yarnpkg.com/faker/-/faker-6.6.6.tgz#e9529da0109dca4c7c5dbfeaadbd9234af943033"
+    integrity sha512-9tCqYEDHI5RYFQigXFwF1hnCwcWCOJl/hmll0lr5D2Ljjb0o4wphb69wikeJDz5qCEzXCoPvG6ss5SDP6IfOdg==
+  
   fast-deep-equal@^3.1.1, fast-deep-equal@^3.1.3:
     version "3.1.3"
     resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz#3a7d56b559d6cbc3eb512325244e619a65c6c525"
@@ -3591,6 +3600,11 @@ Lockfile:
     version "1.2.8"
     resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.8.tgz#c1a464e7693302e082a075cee0c057741ac4772c"
     integrity sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==
+  
+  mockdate@^3.0.5:
+    version "3.0.5"
+    resolved "https://registry.yarnpkg.com/mockdate/-/mockdate-3.0.5.tgz#789be686deb3149e7df2b663d2bc4392bc3284fb"
+    integrity sha512-iniQP4rj1FhBdBYS/+eQv7j1tadJ9lJtdzgOpvsOHng/GbcDh2Fhdeq+ZRldrPYdXvCyfFUmFeEwEGXZB5I/AQ==
   
   mongodb-connection-string-url@^2.6.0:
     version "2.6.0"

@@ -6,7 +6,7 @@ import {
   INTERNAL_SERVER_ERROR_MESSAGE
 } from "../config/mock/mocks";
 import { SubprocessRepository } from "../../src/repositories/subprocess-repository";
-
+import { faker } from "@faker-js/faker";
 describe("SubprocessRepository", () => {
   let subprocessSpy: any;
   let prismaClient: PrismaClient;
