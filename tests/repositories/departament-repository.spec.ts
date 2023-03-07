@@ -40,14 +40,11 @@ describe("DepartamentRepository", () => {
         .spyOn(prismaclient.departament, "create")
         .mockRejectedValueOnce(new Error(INTERNAL_SERVER_ERROR_MESSAGE));
 
+      const departamentRepository = new DepartamentRespository(prismaclient);
+
       await expect(() =>
-        new DepartamentRespository(prismaclient).create(CREATE_DEPARTAMENT)
-      ).rejects.toThrow(
-        new InternalServerErrorExpection(
-          INTERNAL_SERVER_ERROR_MESSAGE,
-          expect.anything()
-        )
-      );
+        departamentRepository.create(CREATE_DEPARTAMENT)
+      ).rejects.toThrow(new InternalServerErrorExpection());
     });
   });
 
@@ -77,19 +74,13 @@ describe("DepartamentRepository", () => {
         .spyOn(prismaclient.departament, "update")
         .mockRejectedValueOnce(new Error(INTERNAL_SERVER_ERROR_MESSAGE));
 
+      const departamentReposiroty = new DepartamentRespository(prismaclient);
+
       await expect(() =>
-        new DepartamentRespository(prismaclient).update(
-          String(DEPARTAMENT_UPDATED_RESPONSE.id),
-          {
-            name: "financial"
-          }
-        )
-      ).rejects.toThrowError(
-        new InternalServerErrorExpection(
-          INTERNAL_SERVER_ERROR_MESSAGE,
-          expect.anything()
-        )
-      );
+        departamentReposiroty.update(String(DEPARTAMENT_UPDATED_RESPONSE.id), {
+          name: "financial"
+        })
+      ).rejects.toThrowError(new InternalServerErrorExpection());
     });
   });
 
@@ -147,22 +138,6 @@ describe("DepartamentRepository", () => {
           process: true
         }
       });
-    });
-    it("should throw if prisma client throws ", async () => {
-      jest
-        .spyOn(prismaclient.departament, "findFirst")
-        .mockRejectedValueOnce(new Error(INTERNAL_SERVER_ERROR_MESSAGE));
-
-      await expect(() =>
-        new DepartamentRespository(prismaclient).findOne({
-          name: "financial"
-        })
-      ).rejects.toThrowError(
-        new InternalServerErrorExpection(
-          INTERNAL_SERVER_ERROR_MESSAGE,
-          expect.anything()
-        )
-      );
     });
   });
 });

@@ -7,7 +7,6 @@ import {
   UPDATED_MANY_COUNT_MOCK
 } from "../config/mock/mocks";
 import { SubprocessRepository } from "../../src/repositories/subprocess-repository";
-import { faker } from "@faker-js/faker";
 describe("SubprocessRepository", () => {
   let subprocessSpy: any;
   let prismaClient: PrismaClient;
@@ -47,12 +46,7 @@ describe("SubprocessRepository", () => {
 
       await expect(() =>
         new SubprocessRepository(prismaClient).create(CREATE_SUBPROCESS_MOCK)
-      ).rejects.toThrow(
-        new InternalServerErrorExpection(
-          INTERNAL_SERVER_ERROR_MESSAGE,
-          expect.anything()
-        )
-      );
+      ).rejects.toThrow(new InternalServerErrorExpection());
     });
   });
 
@@ -85,12 +79,7 @@ describe("SubprocessRepository", () => {
           "6406a00f10ba2d58b4eaad3b",
           { status: "done" }
         )
-      ).rejects.toThrow(
-        new InternalServerErrorExpection(
-          INTERNAL_SERVER_ERROR_MESSAGE,
-          expect.anything()
-        )
-      );
+      ).rejects.toThrow(new InternalServerErrorExpection());
     });
   });
 
@@ -128,12 +117,7 @@ describe("SubprocessRepository", () => {
           processId: "640634318365384217b89203",
           departamentId: "6405ee50958ef4c30eb9d0a0"
         })
-      ).rejects.toThrow(
-        new InternalServerErrorExpection(
-          INTERNAL_SERVER_ERROR_MESSAGE,
-          expect.anything()
-        )
-      );
+      ).rejects.toThrow(new InternalServerErrorExpection());
     });
   });
 
@@ -164,12 +148,7 @@ describe("SubprocessRepository", () => {
         new SubprocessRepository(prismaClient).findOne({
           id: "6406a00f10ba2d58b4eaad3b"
         })
-      ).rejects.toThrow(
-        new InternalServerErrorExpection(
-          INTERNAL_SERVER_ERROR_MESSAGE,
-          expect.anything()
-        )
-      );
+      ).rejects.toThrow(new InternalServerErrorExpection());
     });
   });
 
@@ -204,12 +183,7 @@ describe("SubprocessRepository", () => {
           { subprocessId: "64078fd1f3e5f6dd3417d1b2" },
           { deletedAt: new Date() }
         )
-      ).rejects.toThrow(
-        new InternalServerErrorExpection(
-          INTERNAL_SERVER_ERROR_MESSAGE,
-          expect.anything()
-        )
-      );
+      ).rejects.toThrow(new InternalServerErrorExpection());
     });
   });
 });

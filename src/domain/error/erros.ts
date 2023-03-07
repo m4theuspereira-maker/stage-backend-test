@@ -1,3 +1,5 @@
+import { INTERNAL_SERVER_ERROR_MESSAGE } from "../../../tests/config/mock/mocks";
+
 export class InvalidDepartamentNameExeption implements Error {
   name: string;
   message: string;
@@ -33,10 +35,8 @@ export class InternalServerErrorExpection implements Error {
   name: string;
   message: string;
 
-  constructor(message: string, stack: any) {
+  constructor() {
     this.name = "InternalServerErrorExpection";
-    this.message = message;
-
-    console.log(stack);
+    this.message = INTERNAL_SERVER_ERROR_MESSAGE;
   }
 }

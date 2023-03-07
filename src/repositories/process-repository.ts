@@ -20,8 +20,8 @@ export class ProcessRepository implements IRepository {
           deletedAt: null
         } as Prisma.ProcessCreateInput
       });
-    } catch (error: any) {
-      throw new InternalServerErrorExpection(error.message, error);
+    } catch (error) {
+      throw new InternalServerErrorExpection();
     }
   }
 
@@ -34,8 +34,8 @@ export class ProcessRepository implements IRepository {
           updatedAt: new Date()
         } as Prisma.ProcessUncheckedUpdateInput
       });
-    } catch (error: any) {
-      throw new InternalServerErrorExpection(error.message, error);
+    } catch (error) {
+      throw new InternalServerErrorExpection();
     }
   }
 
@@ -56,8 +56,8 @@ export class ProcessRepository implements IRepository {
           Subprocess: true
         }
       }) as any;
-    } catch (error: any) {
-      throw new InternalServerErrorExpection(error.message, error);
+    } catch (error) {
+      throw new InternalServerErrorExpection();
     }
   }
 
@@ -73,8 +73,8 @@ export class ProcessRepository implements IRepository {
           updatedAt: new Date()
         } as Prisma.ProcessUncheckedUpdateManyInput
       });
-    } catch (error: any) {
-      throw new InternalServerErrorExpection(error.message, error);
+    } catch (error) {
+      throw new InternalServerErrorExpection();
     }
   }
 
@@ -83,8 +83,8 @@ export class ProcessRepository implements IRepository {
       return this.client.process.findMany({
         where: { ...input, deletedAt: null } as Prisma.SubprocessWhereInput
       });
-    } catch (error: any) {
-      throw new InternalServerErrorExpection(error.message, error);
+    } catch (error) {
+      throw new InternalServerErrorExpection();
     }
   }
 }

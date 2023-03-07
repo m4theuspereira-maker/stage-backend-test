@@ -55,12 +55,7 @@ describe("ProcessRepository", () => {
         new ProcessRepository(prismaClient).create(
           CREATE_PROCESS_WITHOUT_SUBPROCESS_AND_DESCRIPTION
         )
-      ).rejects.toThrow(
-        new InternalServerErrorExpection(
-          INTERNAL_SERVER_ERROR_MESSAGE,
-          expect.anything()
-        )
-      );
+      ).rejects.toThrow(new InternalServerErrorExpection());
     });
   });
 
@@ -97,12 +92,7 @@ describe("ProcessRepository", () => {
           responsables: ["Jota", "jotinha", "jotão"],
           description: "esqueça tudo"
         })
-      ).rejects.toThrow(
-        new InternalServerErrorExpection(
-          INTERNAL_SERVER_ERROR_MESSAGE,
-          expect.anything()
-        )
-      );
+      ).rejects.toThrow(new InternalServerErrorExpection());
     });
   });
 
@@ -145,12 +135,7 @@ describe("ProcessRepository", () => {
         new ProcessRepository(prismaClient).findOne({
           id: "6405ee50958ef4c30eb9d0a0"
         })
-      ).rejects.toThrow(
-        new InternalServerErrorExpection(
-          INTERNAL_SERVER_ERROR_MESSAGE,
-          expect.anything()
-        )
-      );
+      ).rejects.toThrow(new InternalServerErrorExpection());
     });
   });
 
@@ -188,12 +173,7 @@ describe("ProcessRepository", () => {
           "6405ee50958ef4c30eb9d0a0",
           { deletedAt: new Date() }
         )
-      ).rejects.toThrow(
-        new InternalServerErrorExpection(
-          INTERNAL_SERVER_ERROR_MESSAGE,
-          expect.anything()
-        )
-      );
+      ).rejects.toThrow(new InternalServerErrorExpection());
     });
   });
 
@@ -226,12 +206,7 @@ describe("ProcessRepository", () => {
         new ProcessRepository(prismaClient).findMany({
           departamentId: "6405ee50958ef4c30eb9d0a0"
         })
-      ).rejects.toThrow(
-        new InternalServerErrorExpection(
-          INTERNAL_SERVER_ERROR_MESSAGE,
-          expect.anything()
-        )
-      );
+      ).rejects.toThrow(new InternalServerErrorExpection());
     });
   });
 });

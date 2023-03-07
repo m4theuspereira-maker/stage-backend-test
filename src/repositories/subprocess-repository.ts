@@ -17,8 +17,8 @@ export class SubprocessRepository implements IRepository {
           deletedAt: null
         } as Prisma.SubprocessUncheckedCreateInput
       });
-    } catch (error: any) {
-      throw new InternalServerErrorExpection(error.message, error);
+    } catch (error) {
+      throw new InternalServerErrorExpection();
     }
   }
 
@@ -31,8 +31,8 @@ export class SubprocessRepository implements IRepository {
           updatedAt: new Date()
         } as Prisma.SubprocessUncheckedUpdateInput
       });
-    } catch (error: any) {
-      throw new InternalServerErrorExpection(error.message, error);
+    } catch (error) {
+      throw new InternalServerErrorExpection();
     }
   }
 
@@ -41,8 +41,8 @@ export class SubprocessRepository implements IRepository {
       return this.client.subprocess.findMany({
         where: { ...input, deletedAt: null } as Prisma.SubprocessWhereInput
       });
-    } catch (error: any) {
-      throw new InternalServerErrorExpection(error.message, error);
+    } catch (error) {
+      throw new InternalServerErrorExpection();
     }
   }
   findOne(input: ISubprocess): Promise<Subprocess | null> {
@@ -50,8 +50,8 @@ export class SubprocessRepository implements IRepository {
       return this.client.subprocess.findFirst({
         where: { ...input, deletedAt: null } as Prisma.SubprocessWhereInput
       });
-    } catch (error: any) {
-      throw new InternalServerErrorExpection(error.message, error);
+    } catch (error) {
+      throw new InternalServerErrorExpection();
     }
   }
 
@@ -59,12 +59,16 @@ export class SubprocessRepository implements IRepository {
     updateQuery: { processId?: string; subprocessId?: string },
     updatePayload: ISubprocess
   ): Promise<IUpdatedManyCountDto> {
-    return this.client.subprocess.updateMany({
-      where: { ...updateQuery },
-      data: {
-        ...updatePayload,
-        updatedAt: new Date()
-      } as Prisma.ProcessUncheckedUpdateManyInput
-    });
+    try {
+      return this.client.subprocess.updateMany({
+        where: { ...updateQuery },
+        data: {
+          ...updatePayload,
+          updatedAt: new Date()
+        } as Prisma.ProcessUncheckedUpdateManyInput
+      });
+    } catch (error) {
+      throw new InternalServerErrorExpection();
+    }
   }
 }

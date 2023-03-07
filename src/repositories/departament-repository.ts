@@ -1,7 +1,11 @@
 import { Departament, Prisma, PrismaClient } from "@prisma/client";
 import { ObjectId } from "mongodb";
 import { InternalServerErrorExpection } from "../domain/error/erros";
-import { IDepartament, IDepartamentDto } from "../domain/interfaces/interfaces";
+import {
+  IDepartament,
+  IDepartamentDto,
+  IProcessDto
+} from "../domain/interfaces/interfaces";
 import { IFindOneDepartamentDto, IRepository } from "./interfaces/repository";
 
 export class DepartamentRespository implements IRepository {
@@ -18,8 +22,8 @@ export class DepartamentRespository implements IRepository {
           deletedAt: null
         }
       });
-    } catch (error: any) {
-      throw new InternalServerErrorExpection(error.message, error);
+    } catch (error) {
+      throw new InternalServerErrorExpection();
     }
   }
 
@@ -36,8 +40,8 @@ export class DepartamentRespository implements IRepository {
           updatedAt: new Date()
         } as Prisma.ProcessUncheckedUpdateInput
       });
-    } catch (error: any) {
-      throw new InternalServerErrorExpection(error.message, error);
+    } catch (error) {
+      throw new InternalServerErrorExpection();
     }
   }
 
@@ -46,14 +50,16 @@ export class DepartamentRespository implements IRepository {
       return (await this.client.departament.findMany()).filter(
         (departament) => !departament.deletedAt
       );
-    } catch (error: any) {
-      throw new InternalServerErrorExpection(error.message, error);
+    } catch (error) {
+      throw new InternalServerErrorExpection();
     }
   }
 
-  findOne(input: IFindOneDepartamentDto): Promise<IDepartamentDto | null> {
+  async findOne(
+    input: IFindOneDepartamentDto
+  ): Promise<IDepartamentDto | null> {
     try {
-      return this.client.departament.findFirst({
+      const departamentFound = (await this.client.departament.findFirst({
         where: {
           ...input,
           deletedAt: null
@@ -66,9 +72,20 @@ export class DepartamentRespository implements IRepository {
           createdAt: true,
           process: true
         }
-      }) as any;
-    } catch (error: any) {
-      throw new InternalServerErrorExpection(error.message, error);
+      })) as any;
+
+      if (!departamentFound) {
+        return departamentFound;
+      }
+
+      return {
+        ...departamentFound,
+        process: departamentFound.process.filter(
+          (process: IProcessDto) => !process.deletedAt
+        )
+      };
+    } catch (error) {
+      throw new InternalServerErrorExpection();
     }
   }
 }
