@@ -41,6 +41,7 @@ export interface IParamValidated {
 }
 
 export interface ISubprocess extends IProcessDto {
+  id?: string;
   processId?: string;
-  subprocessId?: string
+  subprocessId?: string;
 }

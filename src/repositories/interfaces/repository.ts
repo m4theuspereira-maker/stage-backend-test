@@ -6,7 +6,7 @@ export interface IRepository {
 
   update(id: string, updatePlayload: any): Promise<any>;
 
-  findMany(): Promise<any>;
+  findMany(input?: any): Promise<any>;
 
   findOne(input: any): Promise<any>;
 }
