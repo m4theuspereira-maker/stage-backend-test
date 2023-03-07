@@ -112,3 +112,5 @@ export const PROCESS_CREATED_MOCK = {
   deletedAt: null,
   updatedAt: null
 };
+
+export const UPDATED_MANY_COUNT_MOCK = { count: 13 };

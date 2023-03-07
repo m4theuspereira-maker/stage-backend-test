@@ -3,7 +3,8 @@ import { ProcessRepository } from "../../src/repositories/process-repository";
 import {
   CREATE_PROCESS_WITHOUT_SUBPROCESS_AND_DESCRIPTION,
   INTERNAL_SERVER_ERROR_MESSAGE,
-  PROCESS_CREATED_MOCK
+  PROCESS_CREATED_MOCK,
+  UPDATED_MANY_COUNT_MOCK
 } from "../config/mock/mocks";
 import { InternalServerErrorExpection } from "../../src/domain/error/erros";
 import Mockdate from "mockdate";
@@ -144,6 +145,49 @@ describe("ProcessRepository", () => {
         new ProcessRepository(prismaClient).findOne({
           id: "6405ee50958ef4c30eb9d0a0"
         })
+      ).rejects.toThrow(
+        new InternalServerErrorExpection(
+          INTERNAL_SERVER_ERROR_MESSAGE,
+          expect.anything()
+        )
+      );
+    });
+  });
+
+  describe("updateManyByDepartamentId", () => {
+    it("should call update many with correct params", async () => {
+      processSpy = jest
+        .spyOn(prismaClient.process, "updateMany")
+        .mockResolvedValueOnce(UPDATED_MANY_COUNT_MOCK);
+
+      await processRepository.updateManyByDepartamentId(
+        "6405ee50958ef4c30eb9d0a0",
+        { deletedAt: new Date() }
+      );
+
+      expect(processSpy).toHaveBeenCalledWith({
+        where: {
+          departamentId: expect.stringMatching(
+            /^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i
+          )
+        },
+        data: {
+          deletedAt: new Date(),
+          updatedAt: new Date()
+        }
+      });
+    });
+
+    it("should throw if prisma client throws", async () => {
+      jest
+        .spyOn(prismaClient.process, "updateMany")
+        .mockRejectedValueOnce(new Error(INTERNAL_SERVER_ERROR_MESSAGE));
+
+      await expect(() =>
+        new ProcessRepository(prismaClient).updateManyByDepartamentId(
+          "6405ee50958ef4c30eb9d0a0",
+          { deletedAt: new Date() }
+        )
       ).rejects.toThrow(
         new InternalServerErrorExpection(
           INTERNAL_SERVER_ERROR_MESSAGE,

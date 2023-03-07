@@ -34,6 +34,7 @@ export interface IProcessDto {
   subprocess?: IProcess[];
   departamentId?: string;
   status?: string;
+  deletedAt?: Date;
 }
 
 export interface IParamValidated {

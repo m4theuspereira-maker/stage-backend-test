@@ -2,7 +2,11 @@ import { Prisma, PrismaClient, Process } from "@prisma/client";
 import { ObjectId } from "mongodb";
 import { InternalServerErrorExpection } from "../domain/error/erros";
 import { IProcessDto } from "../domain/interfaces/interfaces";
-import { ICreateProcessDto, IRepository } from "./interfaces/repository";
+import {
+  ICreateProcessDto,
+  IRepository,
+  IUpdatedManyCountDto
+} from "./interfaces/repository";
 
 export class ProcessRepository implements IRepository {
   constructor(private readonly client: PrismaClient) {}
@@ -61,6 +65,23 @@ export class ProcessRepository implements IRepository {
           Subprocess: true
         }
       }) as any;
+    } catch (error: any) {
+      throw new InternalServerErrorExpection(error.message, error);
+    }
+  }
+
+  async updateManyByDepartamentId(
+    departamentId: string,
+    updatePayload: IProcessDto
+  ): Promise<IUpdatedManyCountDto> {
+    try {
+      return this.client.process.updateMany({
+        where: { departamentId },
+        data: {
+          ...updatePayload,
+          updatedAt: new Date()
+        } as Prisma.ProcessUncheckedUpdateManyInput
+      });
     } catch (error: any) {
       throw new InternalServerErrorExpection(error.message, error);
     }

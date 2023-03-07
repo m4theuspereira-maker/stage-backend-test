@@ -21,3 +21,7 @@ export interface IFindOneDepartamentDto {
 export interface ICreateProcessDto extends IProcessDto {
   Subprocess?: Prisma.SubprocessUncheckedCreateNestedManyWithoutProcessInput;
 }
+
+export interface IUpdatedManyCountDto {
+  count: number;
+}
