@@ -59,6 +59,8 @@ export class DepartamentRespository implements IRepository {
     input: IFindOneDepartamentDto
   ): Promise<IDepartamentDto | null> {
     try {
+      let process = [];
+
       const departamentFound = (await this.client.departament.findFirst({
         where: {
           ...input,
@@ -78,11 +80,15 @@ export class DepartamentRespository implements IRepository {
         return departamentFound;
       }
 
+      if (departamentFound.process.length) {
+        process = departamentFound.process.filter(
+          (process: IProcessDto) => !process.deletedAt
+        );
+      }
+
       return {
         ...departamentFound,
-        process: departamentFound.process.filter(
-          (process: IProcessDto) => !process.deletedAt
-        )
+        process
       };
     } catch (error) {
       throw new InternalServerErrorExpection();
