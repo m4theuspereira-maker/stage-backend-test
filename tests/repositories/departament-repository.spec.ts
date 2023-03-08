@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { DepartamentRespository } from "../../src/repositories/departament-repository";
 import {
   CREATE_DEPARTAMENT,
+  CREATE_DEPARTAMENT_RETURN_MOCK,
   DEPARTAMENT_UPDATED_RESPONSE,
   FIND_MANY_DEPARTMENT_MOCKS,
   INTERNAL_SERVER_ERROR_MESSAGE
@@ -138,6 +139,37 @@ describe("DepartamentRepository", () => {
           process: true
         }
       });
+    });
+
+    it("should return only process that was not deleted in departament", async () => {
+      departamentSpy = jest
+        .spyOn(prismaclient.departament, "findFirst")
+        .mockResolvedValueOnce(CREATE_DEPARTAMENT_RETURN_MOCK as any);
+
+      const departament = new DepartamentRespository(prismaclient);
+
+      const departamentFound = await departament.findOne({
+        id: "6405ee50958ef4c30eb9d0a0"
+      });
+
+      expect(departamentFound?.process).toHaveLength(1);
+    });
+
+    it("should return an empty array if it comes empty from database", async () => {
+      departamentSpy = jest
+        .spyOn(prismaclient.departament, "findFirst")
+        .mockResolvedValueOnce({
+          ...CREATE_DEPARTAMENT_RETURN_MOCK,
+          process: []
+        } as any);
+
+      const departament = new DepartamentRespository(prismaclient);
+
+      const departamentFound = await departament.findOne({
+        id: "6405ee50958ef4c30eb9d0a0"
+      });
+
+      expect(departamentFound?.process).toHaveLength(0);
     });
   });
 });

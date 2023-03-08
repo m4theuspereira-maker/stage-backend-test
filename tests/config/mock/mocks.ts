@@ -46,16 +46,6 @@ Lorem ipsum dolor sit amet. Aut quasi enim et magnam quasi in voluptas odit est 
 Qui nesciunt minima qui magni reiciendis est quaerat sapiente et dolorem maxime aut provident magnam qui ipsa saepe vel consequatur velit. Aut accusantium dolor et optio fuga et quam eaque. Id consequatur dolorem qui galisum saepe rem quia perferendis.
 Hic quia impedit est dolores doloremque a voluptatem maiores ut culpa quam. Est obcaecati maiores nam beatae eaque sit Quis mollitia eos molestiae totam aut pariatur quia et molestiae nemo.`;
 
-export const CREATE_DEPARTAMENT_RETURN_MOCK = {
-  id: "640381faac89773044d6e1b3",
-  name: "Juridic",
-  team: ["Anderson", "Armando", "Hector"],
-  chief: "John Doe",
-  createdAt: new Date(`2023-03-04T17:38:02.768Z`),
-  deletedAt: null,
-  updatedAt: null
-};
-
 export const INTERNAL_SERVER_ERROR_MESSAGE =
   "Internal Server Error, see the logs to get more informations";
 
@@ -111,6 +101,18 @@ export const PROCESS_CREATED_MOCK = {
   createdAt: new Date("2023-03-06T18:43:43.063Z"),
   deletedAt: null,
   updatedAt: null
+};
+
+export const CREATE_DEPARTAMENT_RETURN_MOCK = {
+  id: "640381faac89773044d6e1b3",
+  name: "Juridic",
+  team: ["Anderson", "Armando", "Hector"],
+  chief: "John Doe",
+  createdAt: new Date(`2023-03-04T17:38:02.768Z`),
+  process: [
+    PROCESS_CREATED_MOCK,
+    { ...PROCESS_CREATED_MOCK, deletedAt: new Date() }
+  ]
 };
 
 export const UPDATED_MANY_COUNT_MOCK = { count: 13 };
