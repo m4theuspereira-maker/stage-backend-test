@@ -7,33 +7,23 @@ import {
   InvalidProcessDescriptionLength,
   InvalidProcessNameExpection
 } from "./error/erros";
-import {
-  IParamValidated,
-  IProcess,
-} from "./interfaces/interfaces";
+import { IParamValidated, IProcess } from "./interfaces/interfaces";
 
 export class Process {
   create({
     name,
     responsables,
-    description = "",
-    subprocess = []
-  }: IProcess): IProcess {
+    description = ""
+  }: IProcess): IProcess | IParamValidated {
     const isValidParam = this.validateDescription(description!);
     const isValidName = this.validateName(name!);
 
     if (!isValidParam.isValid) {
-      throw new InvalidProcessDescriptionLength(isValidParam.error!);
+      return isValidParam;
     }
 
     if (!isValidName.isValid) {
-      throw new InvalidProcessNameExpection(isValidName.error!);
-    }
-
-    if (subprocess.length) {
-      subprocess.map(
-        (subprocess) => (subprocess.status = PROCESS_STATUS.pending)
-      );
+      return isValidName;
     }
 
     return {
@@ -42,8 +32,7 @@ export class Process {
       responsables: responsables.map((responsable) =>
         responsable.toLocaleLowerCase().trim()
       ),
-      description: description,
-      subprocess
+      description: description
     };
   }
 

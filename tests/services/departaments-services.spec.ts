@@ -12,6 +12,7 @@ import { DepartamentService } from "../../src/services/departament-service";
 import { ObjectId } from "mongodb";
 import { Validators } from "../../src/utils/utils";
 import { createMockContext } from "../config/client";
+import Mockdate from "mockdate";
 
 describe("DepartamentService", () => {
   let prismaClient: PrismaClient;
@@ -21,10 +22,10 @@ describe("DepartamentService", () => {
   let departamentSpy: any;
   let departamentRepositorySpy: any;
   let validators: Validators;
-  let validatorsSpy: any;
 
   beforeEach(() => {
     prismaClient = createMockContext().prisma;
+    Mockdate.set(new Date());
   });
 
   describe("createDepartament", () => {

@@ -25,7 +25,6 @@ describe("process", () => {
         name: "make new relatory",
         responsables: ["jose"],
         description: "",
-        subprocess: []
       });
     });
 
@@ -39,35 +38,26 @@ describe("process", () => {
         name: "make new relatory",
         responsables: ["jose"],
         description: "",
-        subprocess: expect.arrayContaining([
-          {
-            name: "get social security",
-            requiredDocumentation: ["calling protocol"],
-            description:
-              "call to social security and provide the protocol number",
-            status: "pending",
-            responsables: ["carlos", "romero"]
-          }
-        ])
+        
       });
     });
 
     it("should throw error if description length exceed 500 characters", () => {
-      expect(() =>
+      expect(
         process.create({
           ...CREATE_PROCESS_WITHOUT_SUBPROCESS_AND_DESCRIPTION,
           description: DESCRIPTION_WITH_EXCEDED_LENGTH
         })
-      ).toThrowError(TOO_MANY_CHARACTERS);
+      ).toEqual({ isValid: false, error: TOO_MANY_CHARACTERS });
     });
 
     it("should throw to invalid name expection if name were short", () => {
-      expect(() =>
+      expect(
         process.create({
           ...CREATE_PROCESS_WITHOUT_SUBPROCESS_AND_DESCRIPTION,
           name: "inv"
         })
-      ).toThrow(new InvalidProcessNameExpection(TOO_LOWER_CHARACTERS));
+      ).toEqual({ isValid: false, error: TOO_LOWER_CHARACTERS });
     });
   });
 
