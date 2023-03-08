@@ -12,21 +12,24 @@ describe("Departament", () => {
       departament = new Departament();
     });
 
-    it("shoud throw error too lower characters if name was short", () => {
-      expect(() =>
-        departament.create("ema", "a", ["edmond", "bosco"])
-      ).toThrowError(TOO_LOWER_CHARACTERS);
+    it("shoud return error too lower characters if name was short", () => {
+      const departamentValidated = departament.create("ema", "a", [
+        "edmond",
+        "bosco"
+      ]) as any;
+
+      expect(departamentValidated.error).toStrictEqual(TOO_LOWER_CHARACTERS);
     });
 
     it("should throw too many characters of name has more than 10 characters", () => {
-      expect(() =>
-        departament.create(
-          "ema",
-          `super departament super idol de xiàoróng
-          dōu méi nǐ de tián bā yuè zhèngwǔ de yángguāng`,
-          ["charles"]
-        )
-      ).toThrowError(TOO_MANY_CHARACTERS);
+      const departamentValidated = departament.create(
+        "ema",
+        `super departament super idol de xiàoróng
+        dōu méi nǐ de tián bā yuè zhèngwǔ de yángguāng`,
+        ["charles"]
+      ) as any;
+
+      expect(departamentValidated.error).toStrictEqual(TOO_MANY_CHARACTERS);
     });
   });
 

@@ -40,3 +40,6 @@ export class InternalServerErrorExpection implements Error {
     this.message = INTERNAL_SERVER_ERROR_MESSAGE;
   }
 }
+
+
+export const DEPARTAMENT_NOT_FOUND_ERROR = "Departament not found"

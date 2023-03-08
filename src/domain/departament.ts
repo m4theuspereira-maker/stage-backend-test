@@ -6,11 +6,15 @@ import { InvalidDepartamentNameExeption } from "./error/erros";
 import { IDepartament, IParamValidated } from "./interfaces/interfaces";
 
 export class Departament {
-  create(chief: string, name: string, team: string[]): IDepartament {
+  create(
+    chief: string,
+    name: string,
+    team: string[]
+  ): IDepartament | IParamValidated {
     const nameValidated = this.validateName(name);
 
     if (!nameValidated.isValid) {
-      throw new InvalidDepartamentNameExeption(nameValidated.error!);
+      return nameValidated;
     }
 
     return {
