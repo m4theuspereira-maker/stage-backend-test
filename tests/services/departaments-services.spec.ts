@@ -5,6 +5,7 @@ import { TOO_LOWER_CHARACTERS } from "../../src/domain/constants/constants";
 import {
   CREATE_DEPARTAMENT,
   CREATE_DEPARTAMENT_RETURN_MOCK,
+  DEPARTAMENT_UPDATED_RESPONSE,
   FIND_MANY_DEPARTMENT_MOCKS
 } from "../config/mock/mocks";
 import { DepartamentService } from "../../src/services/departament-service";
@@ -189,6 +190,35 @@ describe("DepartamentService", () => {
       const departaments = await departamentService.findAllDepartaments();
 
       expect(departaments).toHaveLength(1);
+    });
+  });
+
+  describe("deletedDepartament", () => {
+    beforeEach(() => {
+      departament = new Departament();
+      departamentRepository = new DepartamentRespository(prismaClient);
+      validators = new Validators();
+    });
+
+    it("should call departament service update with correct params", async () => {
+      departamentService = new DepartamentService(
+        departament,
+        departamentRepository,
+        validators
+      );
+
+      const departamentServiceSpy = jest
+        .spyOn(departamentService, "updateDepartament")
+        .mockResolvedValueOnce(DEPARTAMENT_UPDATED_RESPONSE as any);
+
+      await departamentService.deleteDepartament(new ObjectId().toString());
+
+      expect(departamentServiceSpy).toHaveBeenCalledWith(
+        expect.stringMatching(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i),
+        {
+          deletedAt: new Date()
+        }
+      );
     });
   });
 });

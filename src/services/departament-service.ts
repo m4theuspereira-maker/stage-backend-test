@@ -85,6 +85,22 @@ export class DepartamentService {
   }
 
   async findAllDepartaments() {
-    return await this.departamentRepository.findMany();
+    try {
+      return await this.departamentRepository.findMany();
+    } catch (error) {
+      throw new InternalServerErrorExpection();
+    }
+  }
+
+  async deleteDepartament(
+    id: string
+  ): Promise<IDepartamentDto | { error: string }> {
+    try {
+      return await this.updateDepartament(id, {
+        deletedAt: new Date()
+      });
+    } catch (error) {
+      throw new InternalServerErrorExpection();
+    }
   }
 }
