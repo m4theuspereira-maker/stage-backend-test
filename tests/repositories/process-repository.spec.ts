@@ -4,6 +4,7 @@ import {
   CREATE_PROCESS_WITHOUT_SUBPROCESS_AND_DESCRIPTION,
   INTERNAL_SERVER_ERROR_MESSAGE,
   PROCESS_CREATED_MOCK,
+  PROCESS_WITH_SUBPROCESS,
   UPDATED_MANY_COUNT_MOCK
 } from "../config/mock/mocks";
 import { InternalServerErrorExpection } from "../../src/domain/error/erros";
@@ -126,16 +127,16 @@ describe("ProcessRepository", () => {
       });
     });
 
-    it("should throw if client throws", async () => {
-      jest
+    it("should return subprocess that was not deleted", async () => {
+      processSpy = jest
         .spyOn(prismaClient.process, "findFirst")
-        .mockRejectedValueOnce(new Error(INTERNAL_SERVER_ERROR_MESSAGE));
+        .mockResolvedValueOnce(PROCESS_WITH_SUBPROCESS);
 
-      await expect(() =>
-        new ProcessRepository(prismaClient).findOne({
-          id: "6405ee50958ef4c30eb9d0a0"
-        })
-      ).rejects.toThrow(new InternalServerErrorExpection());
+      const processFound = (await processRepository.findOne({
+        id: `64062ba0ec8747ecfc348ccc`
+      })) as any;
+
+      expect(processFound.Subprocess).toHaveLength(1);
     });
   });
 

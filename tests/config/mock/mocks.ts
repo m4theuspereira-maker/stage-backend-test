@@ -103,6 +103,26 @@ export const PROCESS_CREATED_MOCK = {
   updatedAt: null
 };
 
+export const PROCESS_WITH_SUBPROCESS ={
+  ...PROCESS_CREATED_MOCK,
+  Subprocess:[ {
+    id: 'any_id',
+    name: "get social security",
+    responsables: ["carlos", "romero"],
+    requiredDocumentation: ["calling protocol"],
+    description: "call to social security and provide the protocol number",
+    deletedAt: new Date()
+  }, 
+  {
+    id: 'any_id',
+    name: "get social security",
+    responsables: ["carlos", "romero"],
+    requiredDocumentation: ["calling protocol"],
+    description: "call to social security and provide the protocol number",
+    deletedAt: null
+  }]
+}
+
 export const CREATE_DEPARTAMENT_RETURN_MOCK = {
   id: "640381faac89773044d6e1b3",
   name: "Juridic",

@@ -39,9 +39,11 @@ export class ProcessRepository implements IRepository {
     }
   }
 
-  findOne(input: IProcessDto): Promise<Process | null> {
+  async findOne(input: IProcessDto): Promise<Process | null> {
     try {
-      return this.client.process.findFirst({
+      let subprocess = [];
+
+      const processFound = await this.client.process.findFirst({
         where: { ...input, deletedAt: null } as Prisma.ProcessWhereInput,
         select: {
           id: true,
@@ -56,6 +58,18 @@ export class ProcessRepository implements IRepository {
           Subprocess: true
         }
       }) as any;
+
+      if (!processFound) {
+        return null;
+      }
+
+      if (processFound.Subprocess.length) {
+        subprocess = processFound.Subprocess.filter(
+          (subprocess: ISubprocess) => !subprocess.deletedAt
+        );
+      }
+
+      return { ...processFound, Subprocess: subprocess };
     } catch (error) {
       throw new InternalServerErrorExpection();
     }
