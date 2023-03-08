@@ -7,12 +7,13 @@ import {
   UPDATED_MANY_COUNT_MOCK
 } from "../config/mock/mocks";
 import { SubprocessRepository } from "../../src/repositories/subprocess-repository";
+import { createMockContext } from "../config/client";
 describe("SubprocessRepository", () => {
   let subprocessSpy: any;
   let prismaClient: PrismaClient;
   let subprocessRepository: SubprocessRepository;
   beforeEach(() => {
-    prismaClient = new PrismaClient();
+    prismaClient = createMockContext().prisma;
     MockDate.set(new Date());
   });
 

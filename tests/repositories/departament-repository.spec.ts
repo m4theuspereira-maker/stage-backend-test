@@ -9,13 +9,14 @@ import {
 } from "../config/mock/mocks";
 import { InternalServerErrorExpection } from "../../src/domain/error/erros";
 import MockDate from "mockdate";
+import { createMockContext } from "../config/client";
 
 describe("DepartamentRepository", () => {
   let prismaclient: PrismaClient;
   let departamentSpy: any;
 
   beforeEach(() => {
-    prismaclient = new PrismaClient();
+    prismaclient = createMockContext().prisma;
     MockDate.set(new Date());
   });
   describe("create", () => {

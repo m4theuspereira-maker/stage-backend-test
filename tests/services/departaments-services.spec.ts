@@ -9,6 +9,7 @@ import {
 import { DepartamentService } from "../../src/services/departament-service";
 import { ObjectId } from "mongodb";
 import { Validators } from "../../src/utils/utils";
+import { createMockContext } from "../config/client";
 
 describe("DepartamentService", () => {
   let prismaClient: PrismaClient;
@@ -21,7 +22,7 @@ describe("DepartamentService", () => {
   let validatorsSpy: any;
 
   beforeEach(() => {
-    prismaClient = new PrismaClient();
+    prismaClient = createMockContext().prisma;
   });
 
   describe("createDepartament", () => {
@@ -128,7 +129,7 @@ describe("DepartamentService", () => {
       departamentRepository = new DepartamentRespository(prismaClient);
       validators = new Validators();
     });
-    it("should call update", async () => {
+    it("should return error if objectId was not valid", async () => {
       jest.spyOn(validators, "isValidObjectId").mockReturnValueOnce(false);
 
       departamentService = new DepartamentService(
@@ -143,6 +144,26 @@ describe("DepartamentService", () => {
       );
 
       expect(invalidObjectId).toStrictEqual({ error: "Invalid objectId" });
+    });
+
+    it("should return departament error if departament was not found", async () => {
+      departamentService = new DepartamentService(
+        departament,
+        departamentRepository,
+        validators
+      );
+      jest
+        .spyOn(departamentService, "findDepartament")
+        .mockResolvedValueOnce({ error: "Departament not found" });
+
+      const departamentNotFound = await departamentService.updateDepartament(
+        "6405ee50958ef4c30eb9d0a1",
+        { deletedAt: new Date() }
+      );
+
+      expect(departamentNotFound).toStrictEqual({
+        error: "Departament not found"
+      });
     });
   });
 });

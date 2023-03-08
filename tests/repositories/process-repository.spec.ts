@@ -9,9 +9,10 @@ import {
 } from "../config/mock/mocks";
 import { InternalServerErrorExpection } from "../../src/domain/error/erros";
 import Mockdate from "mockdate";
+import { createMockContext } from "../config/client";
 
 describe("ProcessRepository", () => {
-  const prismaClient = new PrismaClient();
+  const prismaClient = createMockContext().prisma;
   let processSpy: any;
   let processRepository: ProcessRepository;
 
