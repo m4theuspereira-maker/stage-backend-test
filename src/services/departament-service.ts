@@ -72,6 +72,12 @@ export class DepartamentService {
         return { error: INVALID_OBJECTID };
       }
 
+      const departmentNotFound = (await this.findDepartament({ id })) as any;
+
+      if (departmentNotFound.error) {
+        return departmentNotFound;
+      }
+
       return await this.departamentRepository.update(id, updatePayload);
     } catch (error) {
       throw new InternalServerErrorExpection();
