@@ -83,4 +83,8 @@ export class DepartamentService {
       throw new InternalServerErrorExpection();
     }
   }
+
+  async findAllDepartaments() {
+    return await this.departamentRepository.findMany();
+  }
 }

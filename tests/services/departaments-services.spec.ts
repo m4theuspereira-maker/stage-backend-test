@@ -4,7 +4,8 @@ import { DepartamentRespository } from "../../src/repositories/departament-repos
 import { TOO_LOWER_CHARACTERS } from "../../src/domain/constants/constants";
 import {
   CREATE_DEPARTAMENT,
-  CREATE_DEPARTAMENT_RETURN_MOCK
+  CREATE_DEPARTAMENT_RETURN_MOCK,
+  FIND_MANY_DEPARTMENT_MOCKS
 } from "../config/mock/mocks";
 import { DepartamentService } from "../../src/services/departament-service";
 import { ObjectId } from "mongodb";
@@ -164,6 +165,30 @@ describe("DepartamentService", () => {
       expect(departamentNotFound).toStrictEqual({
         error: "Departament not found"
       });
+    });
+  });
+
+  describe("findAll", () => {
+    beforeEach(() => {
+      jest
+        .spyOn(prismaClient.departament, "findMany")
+        .mockResolvedValueOnce(FIND_MANY_DEPARTMENT_MOCKS);
+
+      departament = new Departament();
+      departamentRepository = new DepartamentRespository(prismaClient);
+      validators = new Validators();
+    });
+
+    it("should return only departaments that has not deletedAt", async () => {
+      departamentService = new DepartamentService(
+        departament,
+        departamentRepository,
+        validators
+      );
+
+      const departaments = await departamentService.findAllDepartaments();
+
+      expect(departaments).toHaveLength(1);
     });
   });
 });
