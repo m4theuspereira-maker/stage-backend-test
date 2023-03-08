@@ -7,8 +7,8 @@ import {
   CREATE_DEPARTAMENT_RETURN_MOCK
 } from "../config/mock/mocks";
 import { DepartamentService } from "../../src/services/departament-service";
-import { faker } from "@faker-js/faker";
 import { ObjectId } from "mongodb";
+import { Validators } from "../../src/utils/utils";
 
 describe("DepartamentService", () => {
   let prismaClient: PrismaClient;
@@ -17,6 +17,8 @@ describe("DepartamentService", () => {
   let departamentService: DepartamentService;
   let departamentSpy: any;
   let departamentRepositorySpy: any;
+  let validators: Validators;
+  let validatorsSpy: any;
 
   beforeEach(() => {
     prismaClient = new PrismaClient();
@@ -39,7 +41,8 @@ describe("DepartamentService", () => {
 
       departamentService = new DepartamentService(
         departament,
-        departamentRepository
+        departamentRepository,
+        new Validators()
       );
 
       await departamentService.createdDepartament(CREATE_DEPARTAMENT);
@@ -61,7 +64,8 @@ describe("DepartamentService", () => {
 
       departamentService = new DepartamentService(
         departament,
-        departamentRepository
+        departamentRepository,
+        new Validators()
       );
 
       await departamentService.createdDepartament(CREATE_DEPARTAMENT);
@@ -86,7 +90,8 @@ describe("DepartamentService", () => {
 
       departamentService = new DepartamentService(
         departament,
-        departamentRepository
+        departamentRepository,
+        new Validators()
       );
 
       const departamentNotFound = await departamentService.findDepartament({
@@ -103,7 +108,8 @@ describe("DepartamentService", () => {
 
       departamentService = new DepartamentService(
         departament,
-        departamentRepository
+        departamentRepository,
+        new Validators()
       );
 
       await departamentService.findDepartament({
@@ -114,7 +120,29 @@ describe("DepartamentService", () => {
         id: expect.stringMatching(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i)
       });
     });
+  });
 
-    
+  describe("updateDepartament", () => {
+    beforeEach(() => {
+      departament = new Departament();
+      departamentRepository = new DepartamentRespository(prismaClient);
+      validators = new Validators();
+    });
+    it("should call update", async () => {
+      jest.spyOn(validators, "isValidObjectId").mockReturnValueOnce(false);
+
+      departamentService = new DepartamentService(
+        departament,
+        departamentRepository,
+        validators
+      );
+
+      const invalidObjectId = await departamentService.updateDepartament(
+        "invalid_id",
+        { deletedAt: new Date() }
+      );
+
+      expect(invalidObjectId).toStrictEqual({ error: "Invalid objectId" });
+    });
   });
 });

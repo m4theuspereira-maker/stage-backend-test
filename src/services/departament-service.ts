@@ -10,11 +10,13 @@ import {
 } from "../domain/interfaces/interfaces";
 import { DepartamentRespository } from "../repositories/departament-repository";
 import { IFindOneDepartamentDto } from "../repositories/interfaces/repository";
+import { INVALID_OBJECTID, Validators } from "../utils/utils";
 
 export class DepartamentService {
   constructor(
     private readonly departamentDomain: Departament,
-    private readonly departamentRepository: DepartamentRespository
+    private readonly departamentRepository: DepartamentRespository,
+    private readonly validators: Validators
   ) {}
 
   async createdDepartament({
@@ -64,8 +66,12 @@ export class DepartamentService {
   async updateDepartament(
     id: string,
     updatePayload: IDepartamentDto
-  ): Promise<IDepartament> {
+  ): Promise<IDepartament | { error: string }> {
     try {
+      if (!this.validators.isValidObjectId(id)) {
+        return { error: INVALID_OBJECTID };
+      }
+
       return await this.departamentRepository.update(id, updatePayload);
     } catch (error) {
       throw new InternalServerErrorExpection();

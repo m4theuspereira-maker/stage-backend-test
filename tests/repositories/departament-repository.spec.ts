@@ -11,10 +11,10 @@ import { InternalServerErrorExpection } from "../../src/domain/error/erros";
 import MockDate from "mockdate";
 
 describe("DepartamentRepository", () => {
-  let prismaclient: any;
+  let prismaclient: PrismaClient;
   let departamentSpy: any;
 
-  beforeAll(() => {
+  beforeEach(() => {
     prismaclient = new PrismaClient();
     MockDate.set(new Date());
   });

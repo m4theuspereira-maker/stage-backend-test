@@ -11,7 +11,7 @@ describe("SubprocessRepository", () => {
   let subprocessSpy: any;
   let prismaClient: PrismaClient;
   let subprocessRepository: SubprocessRepository;
-  beforeAll(() => {
+  beforeEach(() => {
     prismaClient = new PrismaClient();
     MockDate.set(new Date());
   });
