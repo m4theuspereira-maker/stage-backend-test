@@ -28,17 +28,15 @@ describe("SubprocessServices", () => {
   let subprocessService: SubprocessServices;
   let departamentRepositorySpy: any;
   let processRepositorySpy: any;
-  let subprocessServiceSpy: any;
-  let processSpy: any;
   let subprocessRepositorySpy: any;
-  let subprocessRepository: any;
+  let subprocessRepository: SubprocessRepository;
 
   beforeEach(() => {
     prismaClient = createMockContext().prisma;
     process = new Process();
-    processRepository = new ProcessRepository(new PrismaClient());
-    departamentRepository = new DepartamentRespository(new PrismaClient());
-    subprocessRepository = new SubprocessRepository(new PrismaClient());
+    processRepository = new ProcessRepository(prismaClient);
+    departamentRepository = new DepartamentRespository(prismaClient);
+    subprocessRepository = new SubprocessRepository(prismaClient);
     Mockdate.set(new Date());
   });
 
@@ -77,7 +75,7 @@ describe("SubprocessServices", () => {
 
       subprocessRepositorySpy = jest
         .spyOn(subprocessRepository, "create")
-        .mockResolvedValueOnce(SUB_PROCESS);
+        .mockResolvedValueOnce(SUB_PROCESS as any);
       departamentRepositorySpy = jest
         .spyOn(departamentRepository, "findOne")
         .mockResolvedValueOnce(CREATE_DEPARTAMENT_RETURN_MOCK as any);
@@ -111,7 +109,7 @@ describe("SubprocessServices", () => {
 
       subprocessRepositorySpy = jest
         .spyOn(subprocessRepository, "create")
-        .mockResolvedValueOnce(SUB_PROCESS);
+        .mockResolvedValueOnce(SUB_PROCESS as any);
       departamentRepositorySpy = jest
         .spyOn(departamentRepository, "findOne")
         .mockResolvedValueOnce(CREATE_DEPARTAMENT_RETURN_MOCK as any);
@@ -152,7 +150,7 @@ describe("SubprocessServices", () => {
 
       subprocessRepositorySpy = jest
         .spyOn(subprocessRepository, "create")
-        .mockResolvedValueOnce(SUB_PROCESS);
+        .mockResolvedValueOnce(SUB_PROCESS as any);
       departamentRepositorySpy = jest
         .spyOn(departamentRepository, "findOne")
         .mockResolvedValueOnce(CREATE_DEPARTAMENT_RETURN_MOCK as any);
@@ -256,7 +254,7 @@ describe("SubprocessServices", () => {
 
       subprocessRepositorySpy = jest
         .spyOn(subprocessRepository, "update")
-        .mockResolvedValueOnce(null);
+        .mockResolvedValueOnce(null as any);
 
       jest
         .spyOn(subprocessService, "findOneSubprocess")
@@ -283,8 +281,84 @@ describe("SubprocessServices", () => {
   });
 
   describe("deleteSubprocess", () => {
-    it("should delete subprocess", () => {
-      expect(1).toBe(1);
+    it("should not call update subprocess if it were not found", async () => {
+      subprocessService = subprocessServiceFactory();
+
+      jest.spyOn(subprocessRepository, "findOne").mockResolvedValueOnce(null);
+
+      subprocessRepositorySpy = jest.spyOn(subprocessRepository, "update");
+      jest.spyOn(subprocessRepository, "findMany").mockResolvedValueOnce([]);
+
+      await subprocessService.deleteSubprocess("640633ae24a1029226009769");
+
+      expect(subprocessRepositorySpy).not.toHaveBeenCalled();
+    });
+
+    it("should not call find many subprocess if it the subprocess hadn't subprocess associated", async () => {
+      subprocessService = subprocessServiceFactory();
+
+      jest
+        .spyOn(subprocessRepository, "findOne")
+        .mockResolvedValueOnce(SUB_PROCESS as any);
+
+      jest.spyOn(subprocessRepository, "findMany").mockResolvedValueOnce([]);
+      const updateManySpy = jest.spyOn(
+        processRepository,
+        "updateManyByDepartamentId"
+      );
+      subprocessRepositorySpy = jest
+        .spyOn(subprocessRepository, "update")
+        .mockResolvedValueOnce(null as any);
+
+      await subprocessService.deleteSubprocess("640633ae24a1029226009769");
+
+      expect(subprocessRepositorySpy).toHaveBeenCalled();
+      expect(updateManySpy).not.toHaveBeenCalled();
+    });
+
+    it("should not call find many subprocess if it the subprocess hadn't subprocess associated", async () => {
+      subprocessService = subprocessServiceFactory();
+
+      jest
+        .spyOn(subprocessRepository, "findOne")
+        .mockResolvedValueOnce(SUB_PROCESS as any);
+
+      jest.spyOn(subprocessRepository, "findMany").mockResolvedValueOnce([]);
+      const updateManySpy = jest.spyOn(
+        subprocessRepository,
+        "updateManyByProcessOrSubprocessId"
+      );
+      subprocessRepositorySpy = jest
+        .spyOn(subprocessRepository, "update")
+        .mockResolvedValueOnce(null as any);
+
+      await subprocessService.deleteSubprocess("640633ae24a1029226009769");
+
+      expect(subprocessRepositorySpy).toHaveBeenCalled();
+      expect(updateManySpy).not.toHaveBeenCalled();
+    });
+
+    it("should all update and updateManyByDepartamentId if subprocess were found", async () => {
+      subprocessService = subprocessServiceFactory();
+
+      jest
+        .spyOn(subprocessRepository, "findOne")
+        .mockResolvedValueOnce(SUB_PROCESS as any);
+
+      jest
+        .spyOn(subprocessRepository, "findMany")
+        .mockResolvedValueOnce(PROCESS_WITH_SUBPROCESS.Subprocess as any);
+      const updateManySpy = jest
+        .spyOn(subprocessRepository, "updateManyByProcessOrSubprocessId")
+        .mockResolvedValueOnce({ count: 1 });
+      subprocessRepositorySpy = jest
+        .spyOn(subprocessRepository, "update")
+        .mockResolvedValueOnce(null as any);
+
+      await subprocessService.deleteSubprocess("640633ae24a1029226009769");
+
+      expect(subprocessRepositorySpy).toHaveBeenCalled();
+      expect(updateManySpy).toHaveBeenCalled();
     });
   });
 });

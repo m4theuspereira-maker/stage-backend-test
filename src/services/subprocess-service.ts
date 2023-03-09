@@ -123,4 +123,23 @@ export class SubprocessServices {
       throw new InternalServerErrorExpection();
     }
   }
+
+  async deleteSubprocess(id: string): Promise<void> {
+    const findOneSubprocess = await this.subprocessRepository.findOne({ id });
+
+    if (findOneSubprocess) {
+      await this.subprocessRepository.update(id, { deletedAt: new Date() });
+    }
+
+    const subprocessFound =
+      (await this.subprocessRepository.findMany({ subprocessId: id })).length >
+      0;
+
+    if (subprocessFound) {
+      await this.subprocessRepository.updateManyByProcessOrSubprocessId(
+        { subprocessId: id },
+        { deletedAt: new Date() }
+      );
+    }
+  }
 }
