@@ -95,6 +95,21 @@ export class ProcessService {
       await this.updateProcess(id, departamentId, {
         deletedAt: new Date()
       });
+
+      const hasSubprocessAssociated =
+        (
+          await this.subprocessRepository.findMany({
+            processId: id,
+            departamentId
+          })
+        ).length > 0;
+
+      if (hasSubprocessAssociated) {
+        await this.subprocessRepository.updateManyByProcessOrSubprocessId(
+          { processId: id },
+          { deletedAt: new Date() }
+        );
+      }
     } catch (error) {
       throw new InternalServerErrorExpection();
     }
