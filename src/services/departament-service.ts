@@ -18,7 +18,6 @@ export class DepartamentService {
     private readonly departamentDomain: Departament,
     private readonly departamentRepository: DepartamentRespository,
     private readonly processRepository: ProcessRepository,
-    private readonly validators: Validators
   ) {}
 
   async createdDepartament({

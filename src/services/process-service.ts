@@ -16,7 +16,6 @@ export class ProcessService {
     private readonly processRepository: ProcessRepository,
     private readonly departamentRepository: DepartamentRespository,
     private readonly subprocessRepository: SubprocessRepository,
-    private readonly validators: Validators
   ) {}
 
   async createProcess(process: IProcessDto): Promise<any> {

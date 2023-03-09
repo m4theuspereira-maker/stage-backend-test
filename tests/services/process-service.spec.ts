@@ -23,7 +23,6 @@ import { SubprocessRepository } from "../../src/repositories/subprocess-reposito
 
 describe("ProcessService", () => {
   let prismaClient: PrismaClient;
-  let validators: Validators;
   let process: Process;
   let processRepository: ProcessRepository;
   let departamentRepository: DepartamentRespository;
@@ -36,31 +35,30 @@ describe("ProcessService", () => {
 
   beforeEach(() => {
     prismaClient = createMockContext().prisma;
+    process = new Process();
+    processRepository = new ProcessRepository(prismaClient);
+    departamentRepository = new DepartamentRespository(prismaClient);
+    subprocessRepository = new SubprocessRepository(prismaClient);
     Mockdate.set(new Date());
   });
 
-  describe("createProcess", () => {
-    beforeEach(() => {
-      process = new Process();
-      processRepository = new ProcessRepository(prismaClient);
-      departamentRepository = new DepartamentRespository(prismaClient);
-      subprocessRepository = new SubprocessRepository(prismaClient);
-      validators = new Validators();
-    });
+  function processServiceFactory() {
+    return new ProcessService(
+      process,
+      processRepository,
+      departamentRepository,
+      subprocessRepository
+    );
+  }
 
+  describe("createProcess", () => {
     it("should not call departament repository if process created was not valid", async () => {
       departamentRepositorySpy = jest.spyOn(departamentRepository, "findOne");
       jest
         .spyOn(process, "create")
         .mockReturnValueOnce({ isValid: false, error: TOO_MANY_CHARACTERS });
 
-      processService = new ProcessService(
-        process,
-        processRepository,
-        departamentRepository,
-        subprocessRepository,
-        validators
-      );
+      processService = processServiceFactory();
 
       await processService.createProcess({
         name: faker.name.jobDescriptor(),
@@ -78,13 +76,7 @@ describe("ProcessService", () => {
         .mockResolvedValue(null);
       processRepositorySpy = jest.spyOn(departamentRepository, "create");
 
-      processService = new ProcessService(
-        process,
-        processRepository,
-        departamentRepository,
-        subprocessRepository,
-        validators
-      );
+      processService = processServiceFactory();
 
       await processService.createProcess({
         name: faker.name.jobDescriptor(),
@@ -110,13 +102,7 @@ describe("ProcessService", () => {
         .mockResolvedValueOnce(null as any);
       processSpy = jest.spyOn(process, "create");
 
-      processService = new ProcessService(
-        process,
-        processRepository,
-        departamentRepository,
-        subprocessRepository,
-        validators
-      );
+      processService = processServiceFactory();
 
       await processService.createProcess({
         name: faker.name.jobDescriptor(),
@@ -140,13 +126,6 @@ describe("ProcessService", () => {
   });
 
   describe("findOneProcess", () => {
-    beforeEach(() => {
-      process = new Process();
-      processRepository = new ProcessRepository(prismaClient);
-      departamentRepository = new DepartamentRespository(prismaClient);
-      subprocessRepository = new SubprocessRepository(prismaClient);
-      validators = new Validators();
-    });
     it("should not call process repository if departament was not found and return null", async () => {
       jest.spyOn(departamentRepository, "findOne").mockResolvedValueOnce(null);
 
@@ -154,13 +133,7 @@ describe("ProcessService", () => {
         .spyOn(processRepository, "findOne")
         .mockResolvedValueOnce(null);
 
-      processService = new ProcessService(
-        process,
-        processRepository,
-        departamentRepository,
-        subprocessRepository,
-        validators
-      );
+      processService = processServiceFactory();
 
       const processFound = await processService.findOneProcess(
         new ObjectId().toString(),
@@ -180,13 +153,7 @@ describe("ProcessService", () => {
         .spyOn(processRepository, "findOne")
         .mockResolvedValueOnce(null);
 
-      processService = new ProcessService(
-        process,
-        processRepository,
-        departamentRepository,
-        subprocessRepository,
-        validators
-      );
+      processService = processServiceFactory();
 
       await processService.findOneProcess(
         new ObjectId().toString(),
@@ -200,26 +167,12 @@ describe("ProcessService", () => {
   });
 
   describe("updateProcess", () => {
-    beforeEach(() => {
-      process = new Process();
-      processRepository = new ProcessRepository(prismaClient);
-      departamentRepository = new DepartamentRespository(prismaClient);
-      subprocessRepository = new SubprocessRepository(prismaClient);
-      validators = new Validators();
-    });
-
     it("should not call findProcess and update if departament werer not found", async () => {
       jest.spyOn(departamentRepository, "findOne").mockResolvedValueOnce(null);
 
       processRepositorySpy = jest.spyOn(processRepository, "update");
 
-      processService = new ProcessService(
-        process,
-        processRepository,
-        departamentRepository,
-        subprocessRepository,
-        validators
-      );
+      processService = processServiceFactory();
 
       processServiceSpy = jest
         .spyOn(processService, "findOneProcess")
@@ -242,13 +195,7 @@ describe("ProcessService", () => {
 
       processRepositorySpy = jest.spyOn(processRepository, "update");
 
-      processService = new ProcessService(
-        process,
-        processRepository,
-        departamentRepository,
-        subprocessRepository,
-        validators
-      );
+      processService = processServiceFactory();
 
       processServiceSpy = jest
         .spyOn(processService, "findOneProcess")
@@ -272,13 +219,7 @@ describe("ProcessService", () => {
         .spyOn(processRepository, "update")
         .mockResolvedValueOnce(null as any);
 
-      processService = new ProcessService(
-        process,
-        processRepository,
-        departamentRepository,
-        subprocessRepository,
-        validators
-      );
+      processService = processServiceFactory();
 
       processServiceSpy = jest
         .spyOn(processService, "findOneProcess")
@@ -299,22 +240,8 @@ describe("ProcessService", () => {
   });
 
   describe("deleteProcess", () => {
-    beforeEach(() => {
-      process = new Process();
-      processRepository = new ProcessRepository(new PrismaClient());
-      departamentRepository = new DepartamentRespository(prismaClient);
-      subprocessRepository = new SubprocessRepository(new PrismaClient());
-      validators = new Validators();
-    });
-
     it("shoul not call subprocessRepository if process had not subprocess associated", async () => {
-      processService = new ProcessService(
-        process,
-        processRepository,
-        departamentRepository,
-        subprocessRepository,
-        validators
-      );
+      processService = processServiceFactory();
       jest
         .spyOn(processService, "updateProcess")
         .mockResolvedValueOnce(null as any);
@@ -331,13 +258,7 @@ describe("ProcessService", () => {
     });
 
     it("should call subprocess if process had subprocess associated", async () => {
-      processService = new ProcessService(
-        process,
-        processRepository,
-        departamentRepository,
-        subprocessRepository,
-        validators
-      );
+      processService = processServiceFactory();
       jest
         .spyOn(processService, "updateProcess")
         .mockResolvedValueOnce(null as any);

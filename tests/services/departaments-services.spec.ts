@@ -29,15 +29,20 @@ describe("DepartamentService", () => {
   beforeEach(() => {
     prismaClient = createMockContext().prisma;
     Mockdate.set(new Date());
+    departament = new Departament();
+    departamentRepository = new DepartamentRespository(prismaClient);
+    processRepository = new ProcessRepository(prismaClient);
   });
 
-  describe("createDepartament", () => {
-    beforeAll(() => {
-      departament = new Departament();
-      departamentRepository = new DepartamentRespository(prismaClient);
-      processRepository = new ProcessRepository(prismaClient);
-    });
+  function departamentServiceFactory() {
+    return new DepartamentService(
+      departament,
+      departamentRepository,
+      processRepository
+    );
+  }
 
+  describe("createDepartament", () => {
     it("should not call repository if domain return error", async () => {
       departamentRepositorySpy = jest
         .spyOn(departamentRepository, "create")
@@ -47,12 +52,7 @@ describe("DepartamentService", () => {
         .spyOn(departament, "create")
         .mockReturnValueOnce({ isValid: false, error: TOO_LOWER_CHARACTERS });
 
-      departamentService = new DepartamentService(
-        departament,
-        departamentRepository,
-        processRepository,
-        new Validators()
-      );
+      departamentService = departamentServiceFactory();
 
       await departamentService.createdDepartament(CREATE_DEPARTAMENT);
 
@@ -74,8 +74,7 @@ describe("DepartamentService", () => {
       departamentService = new DepartamentService(
         departament,
         departamentRepository,
-        processRepository,
-        new Validators()
+        processRepository
       );
 
       await departamentService.createdDepartament(CREATE_DEPARTAMENT);
@@ -88,23 +87,12 @@ describe("DepartamentService", () => {
   });
 
   describe("findDepartament", () => {
-    beforeEach(() => {
-      departament = new Departament();
-      departamentRepository = new DepartamentRespository(prismaClient);
-      processRepository = new ProcessRepository(prismaClient);
-    });
-
     it("should return not found error if departament was not found", async () => {
       departamentRepositorySpy = jest
         .spyOn(departamentRepository, "findOne")
         .mockResolvedValueOnce(null as any);
 
-      departamentService = new DepartamentService(
-        departament,
-        departamentRepository,
-        processRepository,
-        new Validators()
-      );
+      departamentService = departamentServiceFactory();
 
       const departamentNotFound = await departamentService.findDepartament({
         id: "any_id"
@@ -118,12 +106,7 @@ describe("DepartamentService", () => {
         .spyOn(departamentRepository, "findOne")
         .mockResolvedValueOnce(CREATE_DEPARTAMENT_RETURN_MOCK as any);
 
-      departamentService = new DepartamentService(
-        departament,
-        departamentRepository,
-        processRepository,
-        new Validators()
-      );
+      departamentService = departamentServiceFactory();
 
       await departamentService.findDepartament({
         id: new ObjectId().toString()
@@ -136,22 +119,8 @@ describe("DepartamentService", () => {
   });
 
   describe("updateDepartament", () => {
-    beforeEach(() => {
-      departament = new Departament();
-      departamentRepository = new DepartamentRespository(prismaClient);
-      processRepository = new ProcessRepository(prismaClient);
-
-      validators = new Validators();
-    });
     it("should return error if objectId was not valid", async () => {
-      jest.spyOn(validators, "isValidObjectId").mockReturnValueOnce(false);
-
-      departamentService = new DepartamentService(
-        departament,
-        departamentRepository,
-        processRepository,
-        validators
-      );
+      departamentService = departamentServiceFactory();
 
       const invalidObjectId = await departamentService.updateDepartament(
         "invalid_id",
@@ -162,12 +131,7 @@ describe("DepartamentService", () => {
     });
 
     it("should return departament error if departament was not found", async () => {
-      departamentService = new DepartamentService(
-        departament,
-        departamentRepository,
-        processRepository,
-        validators
-      );
+      departamentService = departamentServiceFactory();
       jest
         .spyOn(departamentService, "findDepartament")
         .mockResolvedValueOnce(null);
@@ -186,19 +150,10 @@ describe("DepartamentService", () => {
       jest
         .spyOn(prismaClient.departament, "findMany")
         .mockResolvedValueOnce(FIND_MANY_DEPARTMENT_MOCKS);
-
-      departament = new Departament();
-      departamentRepository = new DepartamentRespository(prismaClient);
-      validators = new Validators();
     });
 
     it("should return only departaments that has not deletedAt", async () => {
-      departamentService = new DepartamentService(
-        departament,
-        departamentRepository,
-        processRepository,
-        validators
-      );
+      departamentService = departamentServiceFactory();
 
       const departaments = await departamentService.findAllDepartaments();
 
@@ -208,19 +163,11 @@ describe("DepartamentService", () => {
 
   describe("deletedDepartament", () => {
     beforeEach(() => {
-      departament = new Departament();
-      departamentRepository = new DepartamentRespository(prismaClient);
-      processRepository = new ProcessRepository(prismaClient);
       validators = new Validators();
     });
 
     it("should call departament service update with correct params", async () => {
-      departamentService = new DepartamentService(
-        departament,
-        departamentRepository,
-        processRepository,
-        validators
-      );
+      departamentService = departamentServiceFactory();
 
       jest.spyOn(processRepository, "findMany").mockResolvedValueOnce([]);
 
@@ -239,12 +186,7 @@ describe("DepartamentService", () => {
     });
 
     it("should delete all the process if departament had", async () => {
-      departamentService = new DepartamentService(
-        departament,
-        departamentRepository,
-        processRepository,
-        validators
-      );
+      departamentService = departamentServiceFactory();
 
       jest
         .spyOn(departamentService, "updateDepartament")
