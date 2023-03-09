@@ -43,3 +43,4 @@ export class InternalServerErrorExpection implements Error {
 
 
 export const DEPARTAMENT_NOT_FOUND_ERROR = "Departament not found"
+export const PROCESS_NOT_FOUND_ERROR = "Process not found"

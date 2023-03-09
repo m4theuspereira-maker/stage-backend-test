@@ -92,12 +92,13 @@ export class ProcessRepository implements IRepository {
     }
   }
 
-  findMany(input: IProcessDto): Promise<Process[] | []> {
+  findMany(input?: IProcessDto): Promise<Process[] | []> {
     try {
       return this.client.process.findMany({
         where: { ...input, deletedAt: null } as Prisma.SubprocessWhereInput
       });
     } catch (error) {
+      console.log(error)
       throw new InternalServerErrorExpection();
     }
   }

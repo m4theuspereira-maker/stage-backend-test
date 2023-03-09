@@ -1,6 +1,5 @@
 import { Departament } from "../domain/departament";
 import {
-  DEPARTAMENT_NOT_FOUND_ERROR,
   InternalServerErrorExpection
 } from "../domain/error/erros";
 import {
@@ -11,7 +10,6 @@ import {
 import { DepartamentRespository } from "../repositories/departament-repository";
 import { IFindOneDepartamentDto } from "../repositories/interfaces/repository";
 import { ProcessRepository } from "../repositories/process-repository";
-import { INVALID_OBJECTID, Validators } from "../utils/utils";
 
 export class DepartamentService {
   constructor(

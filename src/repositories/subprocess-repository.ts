@@ -36,7 +36,7 @@ export class SubprocessRepository implements IRepository {
     }
   }
 
-  async findMany(input: ISubprocess): Promise<Subprocess[] | []> {
+  async findMany(input?: ISubprocess): Promise<Subprocess[] | []> {
     try {
       return this.client.subprocess.findMany({
         where: { ...input, deletedAt: null } as Prisma.SubprocessWhereInput
@@ -45,11 +45,11 @@ export class SubprocessRepository implements IRepository {
       throw new InternalServerErrorExpection();
     }
   }
-  findOne(input: ISubprocess): Promise<Subprocess | null> {
+  async findOne(input: ISubprocess): Promise<ISubprocess | null> {
     try {
       return this.client.subprocess.findFirst({
         where: { ...input, deletedAt: null } as Prisma.SubprocessWhereInput
-      });
+      }) as ISubprocess;
     } catch (error) {
       throw new InternalServerErrorExpection();
     }

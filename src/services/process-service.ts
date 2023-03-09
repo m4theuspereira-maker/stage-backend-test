@@ -15,7 +15,7 @@ export class ProcessService {
     private readonly process: Process,
     private readonly processRepository: ProcessRepository,
     private readonly departamentRepository: DepartamentRespository,
-    private readonly subprocessRepository: SubprocessRepository,
+    private readonly subprocessRepository: SubprocessRepository
   ) {}
 
   async createProcess(process: IProcessDto): Promise<any> {
@@ -112,5 +112,37 @@ export class ProcessService {
     } catch (error) {
       throw new InternalServerErrorExpection();
     }
+  }
+
+  async findManyProcessByStatus(departamentId: string, status: string) {
+    try {
+      const departamentfound = await this.departamentRepository.findOne({
+        id: departamentId
+      });
+
+      if (!departamentfound) {
+        return null;
+      }
+
+      return this.processRepository.findMany({ departamentId, status });
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorExpection();
+    }
+  }
+  async findProcessByDepartamentId(departamentId: string): Promise<any> {
+    try {
+      const departamentFound = await this.departamentRepository.findOne({
+        id: departamentId
+      });
+
+      if (!departamentFound) {
+        return [];
+      }
+
+      return await this.processRepository.findMany({
+        departamentId
+      });
+    } catch (error) {}
   }
 }

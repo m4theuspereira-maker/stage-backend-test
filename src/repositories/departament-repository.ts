@@ -38,18 +38,18 @@ export class DepartamentRespository implements IRepository {
         data: {
           ...updatePlayload,
           updatedAt: new Date()
-        } as Prisma.ProcessUncheckedUpdateInput
+        } as Prisma.DepartamentUpdateInput
       });
     } catch (error) {
       throw new InternalServerErrorExpection();
     }
   }
 
-  async findMany(): Promise<Departament[] | []> {
+  async findMany(input?: IProcessDto): Promise<Departament[] | []> {
     try {
-      return (await this.client.departament.findMany()).filter(
-        (departament) => !departament.deletedAt
-      );
+      return (
+        await this.client.departament.findMany({ where: { ...input } })
+      ).filter((departament) => !departament.deletedAt);
     } catch (error) {
       throw new InternalServerErrorExpection();
     }

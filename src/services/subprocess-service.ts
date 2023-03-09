@@ -1,5 +1,9 @@
 import { InternalServerErrorExpection } from "../domain/error/erros";
-import { IParamValidated, ISubprocess } from "../domain/interfaces/interfaces";
+import {
+  IParamValidated,
+  IProcessDto,
+  ISubprocess
+} from "../domain/interfaces/interfaces";
 import { Process } from "../domain/process";
 import { DepartamentRespository } from "../repositories/departament-repository";
 import { ProcessRepository } from "../repositories/process-repository";
@@ -90,12 +94,22 @@ export class SubprocessServices {
         return null;
       }
 
-      return await this.subprocessRepository.findOne({
+      const subprocessFound = await this.subprocessRepository.findOne({
         id,
         processId,
         departamentId,
         subprocessId
       });
+
+      if (!subprocessFound) {
+        return null;
+      }
+
+      const subprocessAssocieated = await this.subprocessRepository.findMany({
+        subprocessId: id
+      });
+
+      return { ...subprocessFound, Subprocess: subprocessAssocieated ?? [] };
     } catch (error) {
       throw new InternalServerErrorExpection();
     }

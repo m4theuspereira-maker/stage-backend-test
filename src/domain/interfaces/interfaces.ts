@@ -46,4 +46,5 @@ export interface ISubprocess extends IProcessDto {
   id?: string;
   processId?: string;
   subprocessId?: string;
+  Subprocess?: [] | ISubprocess[] ;
 }
