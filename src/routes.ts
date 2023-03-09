@@ -36,5 +36,9 @@ routes.post(
 routes.get("/subprocess/:id", subprocessController.findSubprocess);
 routes.put("/subprocess/:id", subprocessController.updateSubprocess);
 routes.delete("/subprocess/:id", subprocessController.deleteSubprocess);
+routes.get(
+  "/subprocess/:subprocessId",
+  subprocessController.findBySubprocessId
+);
 
 export { routes };

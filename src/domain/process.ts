@@ -3,10 +3,6 @@ import {
   TOO_LOWER_CHARACTERS,
   TOO_MANY_CHARACTERS
 } from "./constants/constants";
-import {
-  InvalidProcessDescriptionLength,
-  InvalidProcessNameExpection
-} from "./error/erros";
 import { IParamValidated, IProcess } from "./interfaces/interfaces";
 
 export class Process {

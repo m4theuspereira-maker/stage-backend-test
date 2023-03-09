@@ -156,4 +156,16 @@ export class SubprocessServices {
       );
     }
   }
+
+  async findBySubprocessId(subprocessId: string): Promise<ISubprocess[]> {
+    const subprocessFound = await this.subprocessRepository.findOne({
+      id: subprocessId
+    });
+
+    if (!subprocessFound) {
+      return [];
+    }
+
+    return (await this.subprocessRepository.findMany({ subprocessId })) as any;
+  }
 }

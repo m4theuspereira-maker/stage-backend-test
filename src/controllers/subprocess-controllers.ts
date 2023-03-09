@@ -28,7 +28,7 @@ export class SubprocessController {
   findSubprocess = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const { processId, departamentId, subprocessId } = req.query;
+      const { processId, departamentId } = req.query;
 
       const processFound = await this.subprocessService.findOneSubprocess(
         id,
@@ -77,15 +77,22 @@ export class SubprocessController {
     try {
       const { id } = req.params;
 
-      const processFound = await this.subprocessService.deleteSubprocess(id);
+      await this.subprocessService.deleteSubprocess(id);
 
-      return processFound != null
-        ? res.json(processFound)
-        : res
-            .status(404)
-            .json(
-              `${DEPARTAMENT_NOT_FOUND_ERROR.toLocaleLowerCase()} or ${PROCESS_NOT_FOUND_ERROR.toLocaleLowerCase()}`
-            );
+      return res.json();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  findBySubprocessId = async (req: Request, res: Response) => {
+    try {
+      const { subprocessId } = req.params;
+
+      const processFound = await this.subprocessService.findBySubprocessId(
+        subprocessId
+      );
+      return res.json(processFound);
     } catch (error) {
       console.log(error);
     }
