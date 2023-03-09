@@ -45,4 +45,16 @@ export class ProcessService {
       throw new InternalServerErrorExpection();
     }
   }
+
+  async findOneProcess(id: string, departamentId: string) {
+    const departamentFound = await this.departamentRepository.findOne({
+      id: departamentId
+    });
+
+    if (!departamentFound) {
+      return null;
+    }
+
+    return await this.processRepository.findOne({ id });
+  }
 }

@@ -5,7 +5,10 @@ import { Validators } from "../../src/utils/utils";
 import { createMockContext } from "../config/client";
 import Mockdate from "mockdate";
 import { IDepartamentDto } from "../../src/domain/interfaces/interfaces";
-import { DEPARTAMENT_UPDATED_RESPONSE } from "../config/mock/mocks";
+import {
+  CREATE_DEPARTAMENT_RETURN_MOCK,
+  DEPARTAMENT_UPDATED_RESPONSE
+} from "../config/mock/mocks";
 import { DepartamentRespository } from "../../src/repositories/departament-repository";
 import { faker } from "@faker-js/faker";
 import {
@@ -13,6 +16,7 @@ import {
   TOO_MANY_CHARACTERS
 } from "../../src/domain/constants/constants";
 import { ProcessService } from "../../src/services/process-service";
+import { ObjectId } from "mongodb";
 
 describe("ProcessService", () => {
   let prismaClient: PrismaClient;
@@ -125,4 +129,65 @@ describe("ProcessService", () => {
       });
     });
   });
+
+  describe("findOneProcess", () => {
+    beforeEach(() => {
+      process = new Process();
+      processRepository = new ProcessRepository(prismaClient);
+      departamentRepository = new DepartamentRespository(prismaClient);
+      validators = new Validators();
+    });
+    it("should not call process repository if departament was not found and return null", async () => {
+      jest.spyOn(departamentRepository, "findOne").mockResolvedValueOnce(null);
+
+      processRepositorySpy = jest
+        .spyOn(processRepository, "findOne")
+        .mockResolvedValueOnce(null);
+
+      processService = new ProcessService(
+        process,
+        processRepository,
+        departamentRepository,
+        validators
+      );
+
+      const processFound = await processService.findOneProcess(
+        new ObjectId().toString(),
+        new ObjectId().toString()
+      );
+
+      expect(processFound).toBeNull();
+      expect(processRepositorySpy).not.toHaveBeenCalled();
+    });
+
+    it("should call process repository if ", async () => {
+      jest
+        .spyOn(departamentRepository, "findOne")
+        .mockResolvedValueOnce(CREATE_DEPARTAMENT_RETURN_MOCK as any);
+
+      processRepositorySpy = jest
+        .spyOn(processRepository, "findOne")
+        .mockResolvedValueOnce(null);
+
+      processService = new ProcessService(
+        process,
+        processRepository,
+        departamentRepository,
+        validators
+      );
+
+      await processService.findOneProcess(
+        new ObjectId().toString(),
+        new ObjectId().toString()
+      );
+
+      expect(processRepositorySpy).toHaveBeenCalledWith({
+        id: expect.stringMatching(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i)
+      });
+    });
+  });
+
+  describe("updateProcess",()=>{
+
+  })
 });

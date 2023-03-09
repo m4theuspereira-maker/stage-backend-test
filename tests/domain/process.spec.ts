@@ -8,7 +8,6 @@ import {
   TOO_LOWER_CHARACTERS,
   TOO_MANY_CHARACTERS
 } from "../../src/domain/constants/constants";
-import { InvalidProcessNameExpection } from "../../src/domain/error/erros";
 
 describe("process", () => {
   let process: Process;
