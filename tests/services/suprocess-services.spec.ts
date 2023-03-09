@@ -15,6 +15,7 @@ import {
   CREATE_DEPARTAMENT_RETURN_MOCK,
   CREATE_SUBPROCESS_MOCK,
   PROCESS_CREATED_MOCK,
+  PROCESS_WITH_SUBPROCESS,
   SUB_PROCESS
 } from "../config/mock/mocks";
 import { ProcessService } from "./process-service";
@@ -28,7 +29,7 @@ describe("SubprocessServices", () => {
   let subprocessService: SubprocessServices;
   let departamentRepositorySpy: any;
   let processRepositorySpy: any;
-  let processServiceSpy: any;
+  let subprocessServiceSpy: any;
   let processSpy: any;
   let subprocessRepositorySpy: any;
   let subprocessRepository: any;
@@ -85,14 +86,12 @@ describe("SubprocessServices", () => {
         .spyOn(processRepository, "findOne")
         .mockResolvedValueOnce(PROCESS_CREATED_MOCK);
 
-      const subprocessCreated = await subprocessService.createSubprocess({
+      await subprocessService.createSubprocess({
         name: faker.name.jobDescriptor(),
         responsables: [faker.name.firstName(), faker.name.firstName()],
         description: faker.name.jobArea(),
         departamentId: "6405ee50958ef4c30eb9d0a0"
       });
-
-      console.log(subprocessCreated);
 
       expect(departamentRepositorySpy).toHaveBeenCalled();
       expect(processRepositorySpy).toHaveBeenCalled();
@@ -177,6 +176,58 @@ describe("SubprocessServices", () => {
       expect(departamentRepositorySpy).toHaveBeenCalled();
       expect(processRepositorySpy).toHaveBeenCalled();
       expect(subprocessRepositorySpy).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("findOneSubprocess", () => {
+    it("should return null if departament or process were not found", async () => {
+      jest.spyOn(departamentRepository, "findOne").mockResolvedValueOnce(null);
+
+      jest
+        .spyOn(processRepository, "findOne")
+        .mockResolvedValueOnce(PROCESS_WITH_SUBPROCESS);
+
+      subprocessService = subprocessServiceFactory();
+
+      const subprocessNotFound = await subprocessService.findOneSubprocess(
+        new ObjectId().toString(),
+        new ObjectId().toString(),
+        new ObjectId().toString()
+      );
+
+      expect(subprocessNotFound).toBeNull();
+    });
+
+    it("should call findOne departament and process were found", async () => {
+      jest
+        .spyOn(departamentRepository, "findOne")
+        .mockResolvedValueOnce(CREATE_DEPARTAMENT_RETURN_MOCK as any);
+
+      jest
+        .spyOn(processRepository, "findOne")
+        .mockResolvedValueOnce(PROCESS_WITH_SUBPROCESS);
+
+      subprocessRepositorySpy = jest
+        .spyOn(subprocessRepository, "findOne")
+        .mockResolvedValueOnce(null);
+
+      subprocessService = subprocessServiceFactory();
+
+      await subprocessService.findOneSubprocess(
+        new ObjectId().toString(),
+        new ObjectId().toString(),
+        new ObjectId().toString()
+      );
+
+      expect(subprocessRepositorySpy).toHaveBeenCalledWith({
+        id: expect.stringMatching(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i),
+        processId: expect.stringMatching(
+          /^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i
+        ),
+        departamentId: expect.stringMatching(
+          /^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i
+        )
+      });
     });
   });
 });
