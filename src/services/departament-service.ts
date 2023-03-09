@@ -10,12 +10,14 @@ import {
 } from "../domain/interfaces/interfaces";
 import { DepartamentRespository } from "../repositories/departament-repository";
 import { IFindOneDepartamentDto } from "../repositories/interfaces/repository";
+import { ProcessRepository } from "../repositories/process-repository";
 import { INVALID_OBJECTID, Validators } from "../utils/utils";
 
 export class DepartamentService {
   constructor(
     private readonly departamentDomain: Departament,
     private readonly departamentRepository: DepartamentRespository,
+    private readonly processRepository: ProcessRepository,
     private readonly validators: Validators
   ) {}
 
@@ -47,14 +49,14 @@ export class DepartamentService {
 
   async findDepartament(
     departamentDto: IFindOneDepartamentDto
-  ): Promise<IDepartamentDto | { error: string }> {
+  ): Promise<IDepartamentDto | null> {
     try {
       const departamentFound = await this.departamentRepository.findOne(
         departamentDto
       );
 
       if (!departamentFound) {
-        return { error: DEPARTAMENT_NOT_FOUND_ERROR };
+        return null;
       }
 
       return departamentFound;
@@ -66,16 +68,12 @@ export class DepartamentService {
   async updateDepartament(
     id: string,
     updatePayload: IDepartamentDto
-  ): Promise<IDepartament | { error: string }> {
+  ): Promise<IDepartament | null> {
     try {
-      if (!this.validators.isValidObjectId(id)) {
-        return { error: INVALID_OBJECTID };
-      }
-
       const departmentNotFound = (await this.findDepartament({ id })) as any;
 
-      if (departmentNotFound.error) {
-        return departmentNotFound;
+      if (!departmentNotFound) {
+        return null;
       }
 
       return await this.departamentRepository.update(id, updatePayload);
@@ -92,13 +90,21 @@ export class DepartamentService {
     }
   }
 
-  async deleteDepartament(
-    id: string
-  ): Promise<IDepartamentDto | { error: string }> {
+  async deleteDepartament(id: string): Promise<void> {
     try {
-      return await this.updateDepartament(id, {
+      await this.updateDepartament(id, {
         deletedAt: new Date()
       });
+
+      const hasDepartamentProcess =
+        (await this.processRepository.findMany({ departamentId: id })).length >
+        0;
+
+      if (hasDepartamentProcess) {
+        await this.processRepository.updateManyByDepartamentId(id, {
+          deletedAt: new Date()
+        });
+      }
     } catch (error) {
       throw new InternalServerErrorExpection();
     }

@@ -7,7 +7,8 @@ import Mockdate from "mockdate";
 import { IDepartamentDto } from "../../src/domain/interfaces/interfaces";
 import {
   CREATE_DEPARTAMENT_RETURN_MOCK,
-  DEPARTAMENT_UPDATED_RESPONSE
+  DEPARTAMENT_UPDATED_RESPONSE,
+  PROCESS_WITH_SUBPROCESS
 } from "../config/mock/mocks";
 import { DepartamentRespository } from "../../src/repositories/departament-repository";
 import { faker } from "@faker-js/faker";
@@ -17,6 +18,7 @@ import {
 } from "../../src/domain/constants/constants";
 import { ProcessService } from "../../src/services/process-service";
 import { ObjectId } from "mongodb";
+import { SubprocessRepository } from "../../src/repositories/subprocess-repository";
 
 describe("ProcessService", () => {
   let prismaClient: PrismaClient;
@@ -27,7 +29,9 @@ describe("ProcessService", () => {
   let processService: ProcessService;
   let departamentRepositorySpy: any;
   let processRepositorySpy: any;
+  let processServiceSpy: any;
   let processSpy: any;
+  let subprocessRepository: any;
 
   beforeEach(() => {
     prismaClient = createMockContext().prisma;
@@ -39,6 +43,7 @@ describe("ProcessService", () => {
       process = new Process();
       processRepository = new ProcessRepository(prismaClient);
       departamentRepository = new DepartamentRespository(prismaClient);
+      subprocessRepository = new SubprocessRepository(prismaClient);
       validators = new Validators();
     });
 
@@ -52,6 +57,7 @@ describe("ProcessService", () => {
         process,
         processRepository,
         departamentRepository,
+        subprocessRepository,
         validators
       );
 
@@ -75,6 +81,7 @@ describe("ProcessService", () => {
         process,
         processRepository,
         departamentRepository,
+        subprocessRepository,
         validators
       );
 
@@ -106,6 +113,7 @@ describe("ProcessService", () => {
         process,
         processRepository,
         departamentRepository,
+        subprocessRepository,
         validators
       );
 
@@ -135,6 +143,7 @@ describe("ProcessService", () => {
       process = new Process();
       processRepository = new ProcessRepository(prismaClient);
       departamentRepository = new DepartamentRespository(prismaClient);
+      subprocessRepository = new SubprocessRepository(prismaClient);
       validators = new Validators();
     });
     it("should not call process repository if departament was not found and return null", async () => {
@@ -148,6 +157,7 @@ describe("ProcessService", () => {
         process,
         processRepository,
         departamentRepository,
+        subprocessRepository,
         validators
       );
 
@@ -173,6 +183,7 @@ describe("ProcessService", () => {
         process,
         processRepository,
         departamentRepository,
+        subprocessRepository,
         validators
       );
 
@@ -187,7 +198,111 @@ describe("ProcessService", () => {
     });
   });
 
-  describe("updateProcess",()=>{
+  describe("updateProcess", () => {
+    beforeEach(() => {
+      process = new Process();
+      processRepository = new ProcessRepository(new PrismaClient());
+      departamentRepository = new DepartamentRespository(new PrismaClient());
+      subprocessRepository = new SubprocessRepository(prismaClient);
+      validators = new Validators();
+    });
+
+    it("should not call findProcess and update if departament werer not found", async () => {
+      jest.spyOn(departamentRepository, "findOne").mockResolvedValueOnce(null);
+
+      processRepositorySpy = jest.spyOn(processRepository, "update");
+
+      processService = new ProcessService(
+        process,
+        processRepository,
+        departamentRepository,
+        subprocessRepository,
+        validators
+      );
+
+      processServiceSpy = jest
+        .spyOn(processService, "findOneProcess")
+        .mockResolvedValueOnce(null);
+
+      await processService.updateProcess(
+        new ObjectId().toString(),
+        new ObjectId().toString(),
+        { name: "antedeguemon" }
+      );
+
+      expect(processServiceSpy).not.toHaveBeenCalled();
+      expect(processRepositorySpy).not.toHaveBeenCalled();
+    });
+
+    it("should not call update if process was not found", async () => {
+      jest
+        .spyOn(departamentRepository, "findOne")
+        .mockResolvedValueOnce(CREATE_DEPARTAMENT_RETURN_MOCK as any);
+
+      processRepositorySpy = jest.spyOn(processRepository, "update");
+
+      processService = new ProcessService(
+        process,
+        processRepository,
+        departamentRepository,
+        subprocessRepository,
+        validators
+      );
+
+      processServiceSpy = jest
+        .spyOn(processService, "findOneProcess")
+        .mockResolvedValueOnce(null);
+
+      await processService.updateProcess(
+        new ObjectId().toString(),
+        new ObjectId().toString(),
+        { name: "antedeguemon" }
+      );
+
+      expect(processServiceSpy).toHaveBeenCalledTimes(1);
+      expect(processRepositorySpy).not.toHaveBeenCalled();
+    });
+
+    it("should call update with correct params if departament and process were found", async () => {
+      jest
+        .spyOn(departamentRepository, "findOne")
+        .mockResolvedValueOnce(CREATE_DEPARTAMENT_RETURN_MOCK as any);
+      processRepositorySpy = jest
+        .spyOn(processRepository, "update")
+        .mockResolvedValueOnce(null as any);
+
+      processService = new ProcessService(
+        process,
+        processRepository,
+        departamentRepository,
+        subprocessRepository,
+        validators
+      );
+
+      processServiceSpy = jest
+        .spyOn(processService, "findOneProcess")
+        .mockResolvedValueOnce(PROCESS_WITH_SUBPROCESS);
+
+      await processService.updateProcess(
+        new ObjectId().toString(),
+        new ObjectId().toString(),
+        { name: "antedeguemon" }
+      );
+
+      expect(processServiceSpy).toHaveBeenCalledTimes(1);
+      expect(processRepositorySpy).toHaveBeenCalledWith(
+        expect.stringMatching(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i),
+        { name: "antedeguemon" }
+      );
+    });
+  });
+
+
+  describe("deleteProcess", ()=>{
+
+    it("", async ()=> {
+      
+    })
 
   })
 });

@@ -6,13 +6,15 @@ import {
   CREATE_DEPARTAMENT,
   CREATE_DEPARTAMENT_RETURN_MOCK,
   DEPARTAMENT_UPDATED_RESPONSE,
-  FIND_MANY_DEPARTMENT_MOCKS
+  FIND_MANY_DEPARTMENT_MOCKS,
+  PROCESS_CREATED_MOCK
 } from "../config/mock/mocks";
 import { DepartamentService } from "../../src/services/departament-service";
 import { ObjectId } from "mongodb";
 import { Validators } from "../../src/utils/utils";
 import { createMockContext } from "../config/client";
 import Mockdate from "mockdate";
+import { ProcessRepository } from "../../src/repositories/process-repository";
 
 describe("DepartamentService", () => {
   let prismaClient: PrismaClient;
@@ -21,6 +23,7 @@ describe("DepartamentService", () => {
   let departamentService: DepartamentService;
   let departamentSpy: any;
   let departamentRepositorySpy: any;
+  let processRepository: ProcessRepository;
   let validators: Validators;
 
   beforeEach(() => {
@@ -32,6 +35,7 @@ describe("DepartamentService", () => {
     beforeAll(() => {
       departament = new Departament();
       departamentRepository = new DepartamentRespository(prismaClient);
+      processRepository = new ProcessRepository(prismaClient);
     });
 
     it("should not call repository if domain return error", async () => {
@@ -46,6 +50,7 @@ describe("DepartamentService", () => {
       departamentService = new DepartamentService(
         departament,
         departamentRepository,
+        processRepository,
         new Validators()
       );
 
@@ -69,6 +74,7 @@ describe("DepartamentService", () => {
       departamentService = new DepartamentService(
         departament,
         departamentRepository,
+        processRepository,
         new Validators()
       );
 
@@ -85,6 +91,7 @@ describe("DepartamentService", () => {
     beforeEach(() => {
       departament = new Departament();
       departamentRepository = new DepartamentRespository(prismaClient);
+      processRepository = new ProcessRepository(prismaClient);
     });
 
     it("should return not found error if departament was not found", async () => {
@@ -95,6 +102,7 @@ describe("DepartamentService", () => {
       departamentService = new DepartamentService(
         departament,
         departamentRepository,
+        processRepository,
         new Validators()
       );
 
@@ -102,7 +110,7 @@ describe("DepartamentService", () => {
         id: "any_id"
       });
 
-      expect(departamentNotFound).toEqual({ error: "Departament not found" });
+      expect(departamentNotFound).toEqual(null);
     });
 
     it("shoul return socorro", async () => {
@@ -113,6 +121,7 @@ describe("DepartamentService", () => {
       departamentService = new DepartamentService(
         departament,
         departamentRepository,
+        processRepository,
         new Validators()
       );
 
@@ -130,6 +139,8 @@ describe("DepartamentService", () => {
     beforeEach(() => {
       departament = new Departament();
       departamentRepository = new DepartamentRespository(prismaClient);
+      processRepository = new ProcessRepository(prismaClient);
+
       validators = new Validators();
     });
     it("should return error if objectId was not valid", async () => {
@@ -138,6 +149,7 @@ describe("DepartamentService", () => {
       departamentService = new DepartamentService(
         departament,
         departamentRepository,
+        processRepository,
         validators
       );
 
@@ -146,27 +158,26 @@ describe("DepartamentService", () => {
         { deletedAt: new Date() }
       );
 
-      expect(invalidObjectId).toStrictEqual({ error: "Invalid objectId" });
+      expect(invalidObjectId).toStrictEqual(null);
     });
 
     it("should return departament error if departament was not found", async () => {
       departamentService = new DepartamentService(
         departament,
         departamentRepository,
+        processRepository,
         validators
       );
       jest
         .spyOn(departamentService, "findDepartament")
-        .mockResolvedValueOnce({ error: "Departament not found" });
+        .mockResolvedValueOnce(null);
 
       const departamentNotFound = await departamentService.updateDepartament(
-        "6405ee50958ef4c30eb9d0a1",
+        new ObjectId().toString(),
         { deletedAt: new Date() }
       );
 
-      expect(departamentNotFound).toStrictEqual({
-        error: "Departament not found"
-      });
+      expect(departamentNotFound).toStrictEqual(null);
     });
   });
 
@@ -185,6 +196,7 @@ describe("DepartamentService", () => {
       departamentService = new DepartamentService(
         departament,
         departamentRepository,
+        processRepository,
         validators
       );
 
@@ -198,6 +210,7 @@ describe("DepartamentService", () => {
     beforeEach(() => {
       departament = new Departament();
       departamentRepository = new DepartamentRespository(prismaClient);
+      processRepository = new ProcessRepository(prismaClient);
       validators = new Validators();
     });
 
@@ -205,8 +218,11 @@ describe("DepartamentService", () => {
       departamentService = new DepartamentService(
         departament,
         departamentRepository,
+        processRepository,
         validators
       );
+
+      jest.spyOn(processRepository, "findMany").mockResolvedValueOnce([]);
 
       const departamentServiceSpy = jest
         .spyOn(departamentService, "updateDepartament")
@@ -219,6 +235,34 @@ describe("DepartamentService", () => {
         {
           deletedAt: new Date()
         }
+      );
+    });
+
+    it("should delete all the process if departament had", async () => {
+      departamentService = new DepartamentService(
+        departament,
+        departamentRepository,
+        processRepository,
+        validators
+      );
+
+      jest
+        .spyOn(departamentService, "updateDepartament")
+        .mockResolvedValueOnce(DEPARTAMENT_UPDATED_RESPONSE as any);
+
+      jest
+        .spyOn(processRepository, "findMany")
+        .mockResolvedValueOnce([PROCESS_CREATED_MOCK]);
+
+      const processRepositorySpy = jest
+        .spyOn(processRepository, "updateManyByDepartamentId")
+        .mockResolvedValueOnce({ count: 1 });
+
+      await departamentService.deleteDepartament(`6405ee50958ef4c30eb9d0a0`);
+
+      expect(processRepositorySpy).toHaveBeenCalledWith(
+        expect.stringMatching(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i),
+        { deletedAt: new Date() }
       );
     });
   });

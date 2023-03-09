@@ -7,6 +7,7 @@ import {
 import { Process } from "../domain/process";
 import { DepartamentRespository } from "../repositories/departament-repository";
 import { ProcessRepository } from "../repositories/process-repository";
+import { SubprocessRepository } from "../repositories/subprocess-repository";
 import { Validators } from "../utils/utils";
 
 export class ProcessService {
@@ -14,6 +15,7 @@ export class ProcessService {
     private readonly process: Process,
     private readonly processRepository: ProcessRepository,
     private readonly departamentRepository: DepartamentRespository,
+    private readonly subprocessRepository: SubprocessRepository,
     private readonly validators: Validators
   ) {}
 
@@ -34,7 +36,7 @@ export class ProcessService {
       });
 
       if (!departamentFound) {
-        return { error: "Departament not found" };
+        return null;
       }
 
       return this.processRepository.create({
@@ -47,14 +49,54 @@ export class ProcessService {
   }
 
   async findOneProcess(id: string, departamentId: string) {
-    const departamentFound = await this.departamentRepository.findOne({
-      id: departamentId
-    });
+    try {
+      const departamentFound = await this.departamentRepository.findOne({
+        id: departamentId
+      });
 
-    if (!departamentFound) {
-      return null;
+      if (!departamentFound) {
+        return null;
+      }
+
+      return await this.processRepository.findOne({ id });
+    } catch (error) {
+      throw new InternalServerErrorExpection();
     }
+  }
 
-    return await this.processRepository.findOne({ id });
+  async updateProcess(
+    id: string,
+    departamentId: string,
+    updatePayload: IProcessDto
+  ) {
+    try {
+      const departamentFound = await this.departamentRepository.findOne({
+        id: departamentId
+      });
+
+      if (!departamentFound) {
+        return null;
+      }
+
+      const processFound = await this.findOneProcess(id, departamentId);
+
+      if (!processFound) {
+        return null;
+      }
+
+      return await this.processRepository.update(id, updatePayload);
+    } catch (error) {
+      throw new InternalServerErrorExpection();
+    }
+  }
+
+  async deleteProcess(id: string, departamentId: string) {
+    try {
+      await this.updateProcess(id, departamentId, {
+        deletedAt: new Date()
+      });
+    } catch (error) {
+      throw new InternalServerErrorExpection();
+    }
   }
 }
