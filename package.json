@@ -10,7 +10,7 @@
     "test:coverage": "yarn test -- --coverage",
     "dev": "nodemon src/index.ts",
     "start": "node dist/index.js",
-    "prepare":"husky install"
+    "prepare": "husky install"
   },
   "dependencies": {
     "@prisma/client": "^4.11.0",
@@ -46,9 +46,10 @@
     "jest-mock-extended": "^3.0.3",
     "mockdate": "^3.0.5"
   },
-  "husky":{
-    "hooks":{
-      "pre-commit": "yarn test"
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn test",
+      "pre-push": "yarn build && yarn test"
     }
   },
   "lint-staged": {
