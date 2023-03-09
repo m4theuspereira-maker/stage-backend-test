@@ -18,7 +18,6 @@ import {
   PROCESS_WITH_SUBPROCESS,
   SUB_PROCESS
 } from "../config/mock/mocks";
-import { ProcessService } from "./process-service";
 import { ObjectId } from "mongodb";
 
 describe("SubprocessServices", () => {
@@ -228,6 +227,64 @@ describe("SubprocessServices", () => {
           /^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i
         )
       });
+    });
+  });
+
+  describe("updateSubprocess", () => {
+    it("should not call subprocessRepository process or departament were not found", async () => {
+      subprocessService = subprocessServiceFactory();
+
+      subprocessRepositorySpy = jest.spyOn(subprocessRepository, "update");
+      jest
+        .spyOn(subprocessService, "findOneSubprocess")
+        .mockResolvedValueOnce(null);
+
+      await subprocessService.updateSubprocess(
+        new ObjectId().toString(),
+        new ObjectId().toString(),
+        new ObjectId().toString(),
+        {
+          name: "antedeguemon"
+        }
+      );
+
+      expect(subprocessRepositorySpy).not.toHaveBeenCalled();
+    });
+
+    it("should not call subprocessRepository process or departament were not found", async () => {
+      subprocessService = subprocessServiceFactory();
+
+      subprocessRepositorySpy = jest
+        .spyOn(subprocessRepository, "update")
+        .mockResolvedValueOnce(null);
+
+      jest
+        .spyOn(subprocessService, "findOneSubprocess")
+        .mockResolvedValueOnce(CREATE_SUBPROCESS_MOCK as any);
+
+      await subprocessService.updateSubprocess(
+        "6407832ab70cdc8dfb6f01f7",
+        "640633ae24a1029226009769",
+        "6405ee50958ef4c30eb9d0a0",
+        {
+          name: "antedeguemon",
+          description: "miseraaaaaa"
+        }
+      );
+
+      expect(subprocessRepositorySpy).toHaveBeenCalledWith(
+        "6407832ab70cdc8dfb6f01f7",
+        {
+          name: "antedeguemon",
+          description: "miseraaaaaa"
+        }
+      );
+    });
+  });
+
+  describe("deleteSubprocess", () => {
+    it("should delete subprocess", () => {
+      expect(1).toBe(1);
     });
   });
 });

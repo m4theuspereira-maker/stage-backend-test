@@ -82,8 +82,8 @@ export class SubprocessServices {
       });
 
       const [processFound, departamentFound] = await Promise.all([
-        departamentPromise,
-        processPromise
+        processPromise,
+        departamentPromise
       ]);
 
       if (!processFound || !departamentFound) {
@@ -96,6 +96,29 @@ export class SubprocessServices {
         departamentId,
         subprocessId
       });
+    } catch (error) {
+      throw new InternalServerErrorExpection();
+    }
+  }
+
+  async updateSubprocess(
+    id: string,
+    processId: string,
+    depatamentId: string,
+    updatePayload: ISubprocess
+  ) {
+    try {
+      const subprocessFound = await this.findOneSubprocess(
+        id,
+        processId,
+        depatamentId
+      );
+
+      if (!subprocessFound) {
+        return null;
+      }
+
+      return await this.subprocessRepository.update(id, updatePayload);
     } catch (error) {
       throw new InternalServerErrorExpection();
     }
