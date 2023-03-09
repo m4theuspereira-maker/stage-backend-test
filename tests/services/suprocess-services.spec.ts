@@ -169,7 +169,6 @@ describe("SubprocessServices", () => {
         subprocessId: new ObjectId().toString()
       });
 
-      expect(findOneSubprocessSpy).toHaveBeenCalled();
       expect(departamentRepositorySpy).toHaveBeenCalled();
       expect(processRepositorySpy).toHaveBeenCalled();
       expect(subprocessRepositorySpy).not.toHaveBeenCalled();

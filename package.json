@@ -4,13 +4,13 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "rimraf dist && tsc -p tsconfig-build.json",
+    "build": "yarn && yarn rimraf dist && npx rimraf .husky && yarn tsc -p tsconfig-build.json && yarn prepare",
     "test": "jest --config ./jest.config.js --detectOpenHandles --forceExit",
     "test:watch": "yarn test -- --watch",
     "test:coverage": "yarn test -- --coverage",
     "dev": "ts-node src/index.ts",
     "start": "node dist/index.js",
-    "prepare": "husky install"
+    "prepare": "husky install && npx husky add .husky/pre-commit 'yarn test' && npx husky add .husky/pre-push 'yarn build && yarn test' "
   },
   "dependencies": {
     "@prisma/client": "^4.11.0",
@@ -48,13 +48,12 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn test",
-      "pre-push": "yarn build && yarn test"
+      "pre-commit": "lint-staged",
+      "pre-push": "yarn eslint"
     }
   },
   "lint-staged": {
     "**/*.{ts,js}": [
-      "yarn eslint",
       "yarn test --watchAll=false findRealatedTests --bail"
     ]
   }
