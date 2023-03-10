@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Process } from "../../src/domain/process";
 import { ProcessRepository } from "../../src/repositories/process-repository";
-import { Validators } from "../../src/utils/utils";
 import { createMockContext } from "../config/client";
 import Mockdate from "mockdate";
 import { IDepartamentDto } from "../../src/domain/interfaces/interfaces";
