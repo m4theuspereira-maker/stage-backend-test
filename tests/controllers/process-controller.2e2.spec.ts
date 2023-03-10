@@ -28,8 +28,7 @@ describe("ProcessController", () => {
 
       const response = await supertest(server)
         .delete("/process/640a90c261cb3cbd7062e7f8/640a90c261cb3cbd7062e7f8")
-        .send()
-        .set("Accept", "application/json");
+        .send();
 
       expect({ status: response.status, body: response.body.body }).toEqual(
         expect.objectContaining({
@@ -131,8 +130,6 @@ describe("ProcessController", () => {
       });
     });
   });
-
-
 
   describe("findProcessByDepartamentId", () => {
     test(`
