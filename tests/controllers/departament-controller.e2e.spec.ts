@@ -4,7 +4,6 @@ import { client } from "../../src/config/client/client";
 import Mockdate from "mockdate";
 import {
   CREATE_DEPARTAMENT_RETURN_MOCK,
-  DEPARTAMENT_UPDATED_RESPONSE,
   DEPARTAMENT_WITH_PROCESS_MOCK,
   FIND_MANY_DEPARTMENT_MOCKS,
   RESPONSE_BODY_MOCK
@@ -12,6 +11,7 @@ import {
 describe("DepartamentController", () => {
   beforeEach(() => {
     Mockdate.set(new Date());
+    jest.resetAllMocks();
   });
 
   afterAll(async () => {

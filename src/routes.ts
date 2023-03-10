@@ -19,15 +19,15 @@ routes.get("/departament", departamentController.findAllDepartaments);
 routes.put("/departament/:id", departamentController.updateDepartament);
 routes.delete("/departament/:id", departamentController.deleteDepartament);
 
-routes.post("/process/:departamentId", processController.createProcess);
-routes.patch("/process/:id/:departamentId", processController.updateProcess);
-routes.get("/process/:id/:departamentId", processController.findProcesById);
 routes.get("/process/:departamentId/", processController.findProcessByStatus);
+routes.put("/process/:id/:departamentId", processController.updateProcess);
+routes.get("/process/:id/:departamentId", processController.findProcesById);
 routes.delete("/process/:id/:departamentId", processController.deleteProcess);
 routes.get(
   "/process/:id/:departamentId",
   processController.findByDepartamentId
 );
+routes.post("/process/:departamentId", processController.createProcess);
 
 routes.post(
   "/subprocess/:processId/:departamentId",
