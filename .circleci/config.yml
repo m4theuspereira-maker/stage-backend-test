@@ -27,7 +27,7 @@ jobs:
           pkg-manager: yarn
       - run:
           name: "install depenpendencies"
-          command: yarn
+          command: yarn install
       - run:
           name: "build project"
           command: yarn build
