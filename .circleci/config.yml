@@ -29,6 +29,9 @@ jobs:
           name: "install depenpendencies"
           command: yarn install
       - run:
+          name: "generate schemas"
+          command: npx prisma generate
+      - run:
           name: "build project"
           command: yarn build
       - run:
