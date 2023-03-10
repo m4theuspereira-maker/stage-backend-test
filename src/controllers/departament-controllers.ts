@@ -1,4 +1,8 @@
-import { IDepartament, IDepartamentDto } from "../domain/interfaces/interfaces";
+import {
+  IDepartament,
+  IDepartamentDto,
+  IParamValidated
+} from "../domain/interfaces/interfaces";
 import { DepartamentService } from "../services/departament-service";
 import { Validators } from "../utils/utils";
 import { Request, Response } from "express";
@@ -21,7 +25,15 @@ export class DepartamentController {
       const { name, chief, team } = req.body as unknown as IDepartament;
 
       const departamentCreated =
-        await this.departamentService.createdDepartament({ name, chief, team });
+        (await this.departamentService.createdDepartament({
+          name,
+          chief,
+          team
+        })) as IParamValidated;
+
+      if (departamentCreated.error) {
+        return badrequestError(res, departamentCreated.error);
+      }
 
       return ok(res, departamentCreated);
     } catch (error) {
@@ -49,8 +61,8 @@ export class DepartamentController {
       });
 
       return departamentFound
-        ? res.json(departamentFound)
-        : res.status(404).json(DEPARTAMENT_NOT_FOUND_ERROR);
+        ? ok(res, departamentFound)
+        : notFoundError(res, DEPARTAMENT_NOT_FOUND_ERROR);
     } catch (error) {
       return serverError(res, error);
     }

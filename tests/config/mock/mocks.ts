@@ -103,25 +103,27 @@ export const PROCESS_CREATED_MOCK = {
   updatedAt: null
 };
 
-export const PROCESS_WITH_SUBPROCESS ={
+export const PROCESS_WITH_SUBPROCESS = {
   ...PROCESS_CREATED_MOCK,
-  Subprocess:[ {
-    id: 'any_id',
-    name: "get social security",
-    responsables: ["carlos", "romero"],
-    requiredDocumentation: ["calling protocol"],
-    description: "call to social security and provide the protocol number",
-    deletedAt: new Date()
-  }, 
-  {
-    id: 'any_id',
-    name: "get social security",
-    responsables: ["carlos", "romero"],
-    requiredDocumentation: ["calling protocol"],
-    description: "call to social security and provide the protocol number",
-    deletedAt: null
-  }]
-}
+  Subprocess: [
+    {
+      id: "any_id",
+      name: "get social security",
+      responsables: ["carlos", "romero"],
+      requiredDocumentation: ["calling protocol"],
+      description: "call to social security and provide the protocol number",
+      deletedAt: new Date()
+    },
+    {
+      id: "any_id",
+      name: "get social security",
+      responsables: ["carlos", "romero"],
+      requiredDocumentation: ["calling protocol"],
+      description: "call to social security and provide the protocol number",
+      deletedAt: null
+    }
+  ]
+};
 
 export const CREATE_DEPARTAMENT_RETURN_MOCK = {
   id: "640381faac89773044d6e1b3",
@@ -135,4 +137,50 @@ export const CREATE_DEPARTAMENT_RETURN_MOCK = {
   ]
 };
 
+export const RESPONSE_BODY_MOCK = {
+  id: "640b1eb76036e8041e59c72c",
+  name: "anti fraud",
+  team: ["maria", "jose"],
+  chief: "josefina",
+  createdAt: new Date(),
+  deletedAt: null,
+  updatedAt: null
+};
+
 export const UPDATED_MANY_COUNT_MOCK = { count: 13 };
+
+export const DEPARTAMENT_WITH_PROCESS_MOCK = {
+  id: "640a90c261cb3cbd7062e7f8",
+  name: "anti fraud",
+  chief: "carlos",
+  team: ["maria", "jose"],
+  createdAt: "2023-03-10T02:06:58.247Z",
+  process: [
+    {
+      id: "640a91e3e955579086cc590c",
+      name: "talk to witness",
+      responsables: ["dilian"],
+      requiredDocumentation: null,
+      description: "make calls ",
+      status: "doing",
+      processId: null,
+      departamentId: "640a90c261cb3cbd7062e7f8",
+      createdAt: "2023-03-10T02:11:47.156Z",
+      deletedAt: null,
+      updatedAt: "2023-03-10T02:20:08.595Z"
+    },
+    {
+      id: "640a93c2113c941ca96b13e7",
+      name: "talk to witness",
+      responsables: ["dilian"],
+      requiredDocumentation: null,
+      description: "make calls ",
+      status: "pending",
+      processId: null,
+      departamentId: "640a90c261cb3cbd7062e7f8",
+      createdAt: "2023-03-10T02:19:46.851Z",
+      deletedAt: null,
+      updatedAt: null
+    }
+  ]
+};

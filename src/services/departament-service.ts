@@ -33,7 +33,7 @@ export class DepartamentService {
       ) as IParamValidated;
 
       if (departamentValidated.error) {
-        return departamentValidated;
+        return departamentValidated as IParamValidated;
       }
 
       return await this.departamentRepository.create(
