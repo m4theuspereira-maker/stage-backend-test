@@ -2,9 +2,15 @@ version: 2.1
 orbs:
   node: circleci/node@5.0.2
   aws-ecr: circleci/aws-ecr@8.2.1
+  docker: circleci/docker@1.4.0
 
 jobs:
   setup-project:
+    docker:
+      - image: node
+        auth: 
+          username: ${DOCKER_HUB_USERNAME}
+          password: ${DOCKER_HUB_PASSWORD}
     steps:
       - checkout
       - restore_cache:
