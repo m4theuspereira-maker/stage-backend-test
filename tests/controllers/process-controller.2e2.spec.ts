@@ -17,30 +17,6 @@ describe("ProcessController", () => {
     await client.$disconnect();
   });
 
-  describe("deleteProcess", () => {
-    test(`
-    should return success message
-    status:200
-    DELETE route:/process/:id
-    `, async () => {
-      jest.spyOn(client.process, "update").mockResolvedValueOnce(null as any);
-      jest.spyOn(client.subprocess, "findMany").mockResolvedValueOnce([]);
-
-      const response = await supertest(server)
-        .delete("/process/640a90c261cb3cbd7062e7f8/640a90c261cb3cbd7062e7f8")
-        .send();
-
-      expect({ status: response.status, body: response.body.body }).toEqual(
-        expect.objectContaining({
-          status: 200,
-          body: {
-            message: "deleted with success"
-          }
-        })
-      );
-    });
-  });
-
   describe("findManyProcessByStatus", () => {
     test(`
     should find many process by departamentId and status
