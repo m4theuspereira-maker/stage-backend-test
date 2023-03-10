@@ -13,9 +13,9 @@ const routes = Router();
 routes.use(express.json());
 routes.use(express.urlencoded({ extended: true }));
 
+routes.get("/departament/:id", departamentController.findDepartamentById);
 routes.post("/departament", departamentController.createDepartament);
 routes.get("/departament", departamentController.findAllDepartaments);
-routes.get("/departament/:id", departamentController.findDepartamentById);
 routes.put("/departament/:id", departamentController.updateDepartament);
 routes.delete("/departament/:id", departamentController.deleteDepartament);
 

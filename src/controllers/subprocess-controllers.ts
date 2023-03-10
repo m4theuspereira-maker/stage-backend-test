@@ -30,13 +30,20 @@ export class SubprocessController {
 
       const createSubprocessDto = req.body;
 
-      const processCreated = await this.subprocessService.createSubprocess({
+      const subprocess = await this.subprocessService.createSubprocess({
         ...createSubprocessDto,
         departamentId,
         processId
       });
 
-      return res.json(processCreated);
+      if (!subprocess) {
+        return notFoundError(
+          res,
+          `${DEPARTAMENT_NOT_FOUND_ERROR.toLocaleLowerCase()} or ${PROCESS_NOT_FOUND_ERROR.toLocaleLowerCase()}`
+        );
+      }
+
+      return ok(res, subprocess);
     } catch (error) {
       return responseError(res, error);
     }
@@ -118,7 +125,6 @@ export class SubprocessController {
       if (!this.validators.isValidObjectId(id)) {
         return badrequestError(res, id);
       }
-
 
       await this.subprocessService.deleteSubprocess(id);
 

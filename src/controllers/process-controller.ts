@@ -22,6 +22,11 @@ export class ProcessController {
   createProcess = async (req: Request, res: Response) => {
     try {
       const { departamentId } = req.params;
+
+      if (!this.validators.isValidObjectId(departamentId)) {
+        return badrequestError(res, departamentId);
+      }
+
       const { name, responsables, description } = req.body;
 
       const processCreated = await this.processService.createProcess({
@@ -31,7 +36,14 @@ export class ProcessController {
         departamentId
       });
 
-      return res.json(processCreated);
+      if (!processCreated) {
+        return notFoundError(
+          res,
+          `${DEPARTAMENT_NOT_FOUND_ERROR.toLocaleLowerCase()} or ${PROCESS_NOT_FOUND_ERROR.toLocaleLowerCase()}`
+        );
+      }
+
+      return ok(res, processCreated);
     } catch (error) {
       return responseError(res, error);
     }
@@ -40,6 +52,13 @@ export class ProcessController {
   updateProcess = async (req: Request, res: Response) => {
     try {
       const { id, departamentId } = req.params;
+
+      [id, departamentId].forEach((param) => {
+        if (!this.validators.isValidObjectId(param)) {
+          return badrequestError(res, param);
+        }
+      });
+
       const processUpdatePayload = req.body as unknown as IProcessDto;
 
       const processUpdated = await this.processService.updateProcess(
@@ -48,13 +67,14 @@ export class ProcessController {
         processUpdatePayload
       );
 
-      return processUpdated != null
-        ? res.json(processUpdated)
-        : res
-            .status(404)
-            .json(
-              `${DEPARTAMENT_NOT_FOUND_ERROR.toLocaleLowerCase()} or ${PROCESS_NOT_FOUND_ERROR.toLocaleLowerCase()}`
-            );
+      if (!processUpdated) {
+        return notFoundError(
+          res,
+          `${DEPARTAMENT_NOT_FOUND_ERROR.toLocaleLowerCase()} or ${PROCESS_NOT_FOUND_ERROR.toLocaleLowerCase()}`
+        );
+      }
+
+      return ok(res, processUpdated);
     } catch (error) {
       return responseError(res, error);
     }
@@ -64,18 +84,25 @@ export class ProcessController {
     try {
       const { id, departamentId } = req.params;
 
-      const processUpdated = await this.processService.findOneProcess(
+      [id, departamentId].forEach((param) => {
+        if (!this.validators.isValidObjectId(param)) {
+          return badrequestError(res, param);
+        }
+      });
+
+      const processFound = await this.processService.findOneProcess(
         id,
         departamentId
       );
 
-      return processUpdated != null
-        ? res.json(processUpdated)
-        : res
-            .status(404)
-            .json(
-              `${DEPARTAMENT_NOT_FOUND_ERROR.toLocaleLowerCase()} or ${PROCESS_NOT_FOUND_ERROR.toLocaleLowerCase()}`
-            );
+      if (!processFound) {
+        return notFoundError(
+          res,
+          `${DEPARTAMENT_NOT_FOUND_ERROR.toLocaleLowerCase()} or ${PROCESS_NOT_FOUND_ERROR.toLocaleLowerCase()}`
+        );
+      }
+
+      return ok(res, processFound);
     } catch (error) {
       return responseError(res, error);
     }
@@ -86,18 +113,23 @@ export class ProcessController {
       const { departamentId } = req.params;
       const { status } = req.query;
 
+      if (!this.validators.isValidObjectId(departamentId)) {
+        return badrequestError(res, departamentId);
+      }
+
       const processFound = await this.processService.findManyProcessByStatus(
         departamentId,
         status as string
       );
 
-      return processFound != null
-        ? res.json(processFound)
-        : res
-            .status(404)
-            .json(
-              `${DEPARTAMENT_NOT_FOUND_ERROR.toLocaleLowerCase()} or ${PROCESS_NOT_FOUND_ERROR.toLocaleLowerCase()}`
-            );
+      if (!processFound) {
+        return notFoundError(
+          res,
+          `${DEPARTAMENT_NOT_FOUND_ERROR.toLocaleLowerCase()} or ${PROCESS_NOT_FOUND_ERROR.toLocaleLowerCase()}`
+        );
+      }
+
+      return ok(res, processFound);
     } catch (error) {
       return responseError(res, error);
     }

@@ -44,10 +44,6 @@ export class DepartamentController {
     try {
       const { id } = req.params;
 
-      if (this.validators.isValidObjectId(id)) {
-        return badrequestError(res, id);
-      }
-
       const departamentFound = await this.departamentService.findDepartament({
         id
       });
