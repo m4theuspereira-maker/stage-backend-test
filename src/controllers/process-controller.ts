@@ -6,6 +6,12 @@ import {
 import { IProcessDto } from "../domain/interfaces/interfaces";
 import { ProcessService } from "../services/process-service";
 import { Validators } from "../utils/utils";
+import {
+  badrequestError,
+  notFoundError,
+  ok,
+  responseError
+} from "./adapters/handlers";
 
 export class ProcessController {
   constructor(
@@ -27,7 +33,7 @@ export class ProcessController {
 
       return res.json(processCreated);
     } catch (error) {
-      console.log(error);
+      return responseError(res, error);
     }
   };
 
@@ -50,7 +56,7 @@ export class ProcessController {
               `${DEPARTAMENT_NOT_FOUND_ERROR.toLocaleLowerCase()} or ${PROCESS_NOT_FOUND_ERROR.toLocaleLowerCase()}`
             );
     } catch (error) {
-      console.log(error);
+      return responseError(res, error);
     }
   };
 
@@ -71,7 +77,7 @@ export class ProcessController {
               `${DEPARTAMENT_NOT_FOUND_ERROR.toLocaleLowerCase()} or ${PROCESS_NOT_FOUND_ERROR.toLocaleLowerCase()}`
             );
     } catch (error) {
-      console.log(error);
+      return responseError(res, error);
     }
   };
 
@@ -93,7 +99,7 @@ export class ProcessController {
               `${DEPARTAMENT_NOT_FOUND_ERROR.toLocaleLowerCase()} or ${PROCESS_NOT_FOUND_ERROR.toLocaleLowerCase()}`
             );
     } catch (error) {
-      console.log(error);
+      return responseError(res, error);
     }
   };
 
@@ -101,14 +107,17 @@ export class ProcessController {
     try {
       const { departamentId, id } = req.params;
 
-      const processDeleted = await this.processService.deleteProcess(
-        id,
-        departamentId
-      );
+      [id, departamentId].forEach((param) => {
+        if (!this.validators.isValidObjectId(param)) {
+          return badrequestError(res, param);
+        }
+      });
 
-      return res.json(processDeleted);
+      await this.processService.deleteProcess(id, departamentId);
+
+      return ok(res, { message: "deleted with success" });
     } catch (error) {
-      console.log(error);
+      return responseError(res, error);
     }
   };
 
@@ -122,15 +131,16 @@ export class ProcessController {
         status as string
       );
 
-      return processFound != null
-        ? res.json(processFound)
-        : res
-            .status(404)
-            .json(
-              `${DEPARTAMENT_NOT_FOUND_ERROR.toLocaleLowerCase()} or ${PROCESS_NOT_FOUND_ERROR.toLocaleLowerCase()}`
-            );
+      if (!processFound) {
+        return notFoundError(
+          res,
+          `${DEPARTAMENT_NOT_FOUND_ERROR.toLocaleLowerCase()} or ${PROCESS_NOT_FOUND_ERROR.toLocaleLowerCase()}`
+        );
+      }
+
+      return ok(res, processFound);
     } catch (error) {
-      console.log(error);
+      return responseError(res, error);
     }
   };
 }

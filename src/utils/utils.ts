@@ -1,5 +1,4 @@
-
-export const INVALID_OBJECTID = "Invalid objectId"
+export const INVALID_OBJECTID = "Invalid objectId";
 
 export class Validators {
   isValidObjectId = (objectId: string) =>

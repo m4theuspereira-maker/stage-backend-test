@@ -49,7 +49,10 @@ export function subprocessControllerFactory() {
     new SubprocessRepository(client)
   );
 
-  const subprocessController = new SubprocessController(subprocessService);
+  const subprocessController = new SubprocessController(
+    subprocessService,
+    new Validators()
+  );
 
   return subprocessController;
 }

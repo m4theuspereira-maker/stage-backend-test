@@ -3,11 +3,17 @@ import { DepartamentService } from "../services/departament-service";
 import { Validators } from "../utils/utils";
 import { Request, Response } from "express";
 import { DEPARTAMENT_NOT_FOUND_ERROR } from "../domain/error/erros";
+import {
+  badrequestError,
+  notFoundError,
+  ok,
+  responseError
+} from "./adapters/handlers";
 
 export class DepartamentController {
   constructor(
     private readonly departamentService: DepartamentService,
-    private readonly _validators: Validators
+    private readonly validators: Validators
   ) {}
 
   createDepartament = async (req: Request, res: Response) => {
@@ -17,26 +23,30 @@ export class DepartamentController {
       const departamentCreated =
         await this.departamentService.createdDepartament({ name, chief, team });
 
-      return res.json(departamentCreated);
+      return ok(res, departamentCreated);
     } catch (error) {
-      console.log(error);
+      return responseError(res, error);
     }
   };
 
-  findAllDepartaments = async (req: Request, res: Response) => {
+  findAllDepartaments = async (_req: Request, res: Response) => {
     try {
       const departamentsFound =
         await this.departamentService.findAllDepartaments();
 
-      return res.json(departamentsFound);
+      return ok(res, departamentsFound);
     } catch (error) {
-      console.log(error);
+      return responseError(res, error);
     }
   };
 
   findDepartamentById = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
+
+      if (this.validators.isValidObjectId(id)) {
+        return badrequestError(res, id);
+      }
 
       const departamentFound = await this.departamentService.findDepartament({
         id
@@ -46,13 +56,18 @@ export class DepartamentController {
         ? res.json(departamentFound)
         : res.status(404).json(DEPARTAMENT_NOT_FOUND_ERROR);
     } catch (error) {
-      console.log(error);
+      return responseError(res, error);
     }
   };
 
   updateDepartament = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
+
+      if (!this.validators.isValidObjectId(id)) {
+        return badrequestError(res, id);
+      }
+
       const departmentDto = req.body as unknown as IDepartamentDto;
 
       const departamentFound = await this.departamentService.updateDepartament(
@@ -61,10 +76,10 @@ export class DepartamentController {
       );
 
       return departamentFound
-        ? res.json(departamentFound)
-        : res.status(404).json(DEPARTAMENT_NOT_FOUND_ERROR);
+        ? ok(res, departamentFound)
+        : notFoundError(res, DEPARTAMENT_NOT_FOUND_ERROR);
     } catch (error) {
-      console.log(error);
+      return responseError(res, error);
     }
   };
 
@@ -72,14 +87,14 @@ export class DepartamentController {
     try {
       const { id } = req.params;
 
-      const deleted = await this.departamentService.deleteDepartament(
-        id
-      );
-      return deleted == null
-        ? res.json(deleted)
-        : res.status(404).json(DEPARTAMENT_NOT_FOUND_ERROR);
+      if (!this.validators.isValidObjectId(id)) {
+        return badrequestError(res, id);
+      }
+      await this.departamentService.deleteDepartament(id);
+
+      return ok(res, { message: "deleted with success" });
     } catch (error) {
-      console.log(error);
+      return responseError(res, error);
     }
   };
 }
