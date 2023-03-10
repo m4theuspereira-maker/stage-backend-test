@@ -2,15 +2,9 @@ version: 2.1
 orbs:
   node: circleci/node@5.0.2
   aws-ecr: circleci/aws-ecr@8.2.1
-  docker: circleci/docker@1.4.0
 
 jobs:
   setup-project:
-    docker:
-      - image: node
-        auth: 
-          username: m4theusp
-          password: dckr_pat_7wtc-LJeZ4wu9fpPY4rRohgojG0
     steps:
       - checkout
       - restore_cache:
