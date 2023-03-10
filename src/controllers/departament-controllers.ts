@@ -7,7 +7,7 @@ import {
   badrequestError,
   notFoundError,
   ok,
-  responseError
+  serverError
 } from "./adapters/handlers";
 
 export class DepartamentController {
@@ -25,7 +25,7 @@ export class DepartamentController {
 
       return ok(res, departamentCreated);
     } catch (error) {
-      return responseError(res, error);
+      return serverError(res, error);
     }
   };
 
@@ -36,7 +36,7 @@ export class DepartamentController {
 
       return ok(res, departamentsFound);
     } catch (error) {
-      return responseError(res, error);
+      return serverError(res, error);
     }
   };
 
@@ -52,7 +52,7 @@ export class DepartamentController {
         ? res.json(departamentFound)
         : res.status(404).json(DEPARTAMENT_NOT_FOUND_ERROR);
     } catch (error) {
-      return responseError(res, error);
+      return serverError(res, error);
     }
   };
 
@@ -75,7 +75,7 @@ export class DepartamentController {
         ? ok(res, departamentFound)
         : notFoundError(res, DEPARTAMENT_NOT_FOUND_ERROR);
     } catch (error) {
-      return responseError(res, error);
+      return serverError(res, error);
     }
   };
 
@@ -90,7 +90,7 @@ export class DepartamentController {
 
       return ok(res, { message: "deleted with success" });
     } catch (error) {
-      return responseError(res, error);
+      return serverError(res, error);
     }
   };
 }

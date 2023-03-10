@@ -9,7 +9,7 @@ import {
   badrequestError,
   notFoundError,
   ok,
-  responseError
+  serverError
 } from "./adapters/handlers";
 
 export class SubprocessController {
@@ -45,7 +45,7 @@ export class SubprocessController {
 
       return ok(res, subprocess);
     } catch (error) {
-      return responseError(res, error);
+      return serverError(res, error);
     }
   };
 
@@ -78,7 +78,7 @@ export class SubprocessController {
 
       return ok(res, processFound);
     } catch (error) {
-      return responseError(res, error);
+      return serverError(res, error);
     }
   };
 
@@ -114,7 +114,7 @@ export class SubprocessController {
 
       return ok(res, subprocessUpdated);
     } catch (error) {
-      return responseError(res, error);
+      return serverError(res, error);
     }
   };
 
@@ -130,7 +130,7 @@ export class SubprocessController {
 
       return ok(res, { message: "deleted with success" });
     } catch (error) {
-      return responseError(res, error);
+      return serverError(res, error);
     }
   };
 
@@ -147,7 +147,7 @@ export class SubprocessController {
       );
       return ok(res, processFound);
     } catch (error) {
-      return responseError(res, error);
+      return serverError(res, error);
     }
   };
 }

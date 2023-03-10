@@ -10,7 +10,7 @@ import {
   badrequestError,
   notFoundError,
   ok,
-  responseError
+  serverError
 } from "./adapters/handlers";
 
 export class ProcessController {
@@ -45,7 +45,7 @@ export class ProcessController {
 
       return ok(res, processCreated);
     } catch (error) {
-      return responseError(res, error);
+      return serverError(res, error);
     }
   };
 
@@ -76,7 +76,7 @@ export class ProcessController {
 
       return ok(res, processUpdated);
     } catch (error) {
-      return responseError(res, error);
+      return serverError(res, error);
     }
   };
 
@@ -104,7 +104,7 @@ export class ProcessController {
 
       return ok(res, processFound);
     } catch (error) {
-      return responseError(res, error);
+      return serverError(res, error);
     }
   };
 
@@ -131,7 +131,7 @@ export class ProcessController {
 
       return ok(res, processFound);
     } catch (error) {
-      return responseError(res, error);
+      return serverError(res, error);
     }
   };
 
@@ -149,7 +149,7 @@ export class ProcessController {
 
       return ok(res, { message: "deleted with success" });
     } catch (error) {
-      return responseError(res, error);
+      return serverError(res, error);
     }
   };
 
@@ -172,7 +172,7 @@ export class ProcessController {
 
       return ok(res, processFound);
     } catch (error) {
-      return responseError(res, error);
+      return serverError(res, error);
     }
   };
 }
