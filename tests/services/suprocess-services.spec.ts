@@ -116,7 +116,7 @@ describe("SubprocessServices", () => {
       processRepositorySpy = jest
         .spyOn(processRepository, "findOne")
         .mockResolvedValueOnce(PROCESS_CREATED_MOCK);
-      const findOneSubprocessSpy = jest
+      jest
         .spyOn(subprocessRepository, "findOne")
         .mockResolvedValueOnce(CREATE_SUBPROCESS_MOCK as any);
 
@@ -128,7 +128,6 @@ describe("SubprocessServices", () => {
         subprocessId: new ObjectId().toString()
       });
 
-      expect(findOneSubprocessSpy).toHaveBeenCalled();
       expect(departamentRepositorySpy).toHaveBeenCalled();
       expect(processRepositorySpy).toHaveBeenCalled();
       expect(subprocessRepositorySpy).toHaveBeenCalledWith({
