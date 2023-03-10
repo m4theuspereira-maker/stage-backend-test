@@ -1,4 +1,4 @@
-import { client } from "../client/client";
+import { client } from "../config/client/client";
 import { DepartamentController } from "../controllers/departament-controllers";
 import { ProcessController } from "../controllers/process-controller";
 import { SubprocessController } from "../controllers/subprocess-controllers";
