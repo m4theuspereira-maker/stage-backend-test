@@ -6,3 +6,4 @@ coverage
 .env
 coverage
 data
+.husky

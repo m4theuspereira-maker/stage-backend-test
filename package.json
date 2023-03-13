@@ -10,7 +10,7 @@
     "test:coverage": "yarn test -- --coverage",
     "dev": "nodemon src/index.ts",
     "start": "node dist/index.js",
-    "prepare": "husky install && npx husky add .husky/pre-commit 'yarn test' && npx husky add .husky/pre-push 'yarn test' "
+    "prepare": "husky install && npx husky add .husky/pre-commit 'yarn lint-staged' && npx husky add .husky/pre-push 'yarn lint-staged && yarn test' "
   },
   "dependencies": {
     "@prisma/client": "^4.11.0",
